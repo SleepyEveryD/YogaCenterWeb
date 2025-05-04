@@ -32,11 +32,11 @@ export default {
 }
 .links {
   font-family: Jost;
-  font-size: 2.8vh;
+  font-size: 2vh;
   font-weight: bold;
   margin-right: 5px;
   margin-left: 5px;
-  color: #B6244F;
+  color: #006a71;
   text-decoration: underline;
 }
 .links:hover {
