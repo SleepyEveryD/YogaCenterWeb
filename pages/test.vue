@@ -10,14 +10,14 @@
       <option value="A-Z">A-Z</option>
       <option value="Z-A">Z-A</option>
     </select>
-    <p>当前选中的值: {{ order }}</p>
+    <p>current value: {{ order }}</p>
   </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue';
 
-const order = ref('Role');
+const order = ref('A-Z');
 
 // 监听 order 变化
 watch(order, (newVal) => {
@@ -29,3 +29,6 @@ const logChange = () => {
   console.log('[@change] 当前 order:', order.value);
 };
 </script>
+<style>
+
+</style>

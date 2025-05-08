@@ -1,5 +1,7 @@
 <template>
   <header>
+
+    <button v-on:click="dropdown">{{activeDropdown??'null'}}</button>
     <nav>
       <div class="topbar">
         <div class="logo">
@@ -14,6 +16,7 @@
             <div class="landmark-container">
               <NuxtLink class="landmark" :to="link.path" :aria-label="`Link to ${link.title}`">
                 {{ link.title }}
+
               </NuxtLink>
             </div>
 
@@ -126,6 +129,11 @@ export default {
         this.mobileNav = false;
       }
     },
+
+    dropdown(a){
+      this.activeDropdown = 'test';
+      alert('test')
+    }
   },
 };
 </script>

@@ -16,7 +16,7 @@
     </div>
     <!-- 图片区域 -->
     <NuxtLink
-        :to="`/courses/${activity.id}`"
+        :to="`/activities/${activity.id}`"
         class="relative h-48 w-full bg-gray-200 overflow-hidden block"
     >
       <img
