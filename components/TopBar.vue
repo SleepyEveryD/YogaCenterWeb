@@ -1,0 +1,443 @@
+<template>
+  <header>
+
+    <nav class >
+      <div class=" px-32 pt-6 flex items-center justify-between  bg-white border-b-[5px] border-b-[#48A6A7] text-white " >
+
+
+        <!-- Desktop elements -->
+        <ul v-if="!mobile" class="navigation flex items-center w-full "> <!-- 添加 px-4 左右内边距 -->
+          <!-- 常规导航项 -->
+          <div class="logo">
+            <NuxtLink to="/" title="Homepage">
+              <img src="../assets/img/logo.png" alt="Logo" id="desktop-logo"/>
+            </NuxtLink>
+          </div>
+          <li
+              v-for="link in links"
+              :key="link.path"
+              class="nav-item relative flex-1 text-center"
+              @mouseenter="activeDropdown = link.title"
+              @mouseleave="activeDropdown = null"
+          >
+            <div class="landmark-container mx-auto" style="width: fit-content"> <!-- 添加 mx-auto 使内容居中 -->
+              <NuxtLink
+                  class="landmark flex items-center justify-center"
+                  :to="link.path"
+                  :aria-label="`Link to ${link.title}`"
+              >
+                {{ link.title }}
+                <Icon
+                    v-if="link.dropdown"
+                    name="heroicons:chevron-down"
+                    class="dropdown-icon ml-1 w-4 h-4"
+                />
+              </NuxtLink>
+            </div>
+
+            <ul
+                v-if="link.dropdown && activeDropdown === link.title"
+                class="dropdown-menu absolute top-full left-0 bg-white border border-gray-200 shadow-lg z-10 min-w-[150px] py-2"
+            >
+              <li v-for="sublink in link.dropdown" :key="sublink.path">
+                <NuxtLink
+                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-cyan-700"
+                    :to="sublink.path"
+                >
+                  {{ sublink.title }}
+                </NuxtLink>
+              </li>
+            </ul>
+          </li>
+
+          <!-- user icon and cart icon -->
+          <li class="nav-item relative flex-1 text-center">
+            <div class="user-actions flex justify-center space-x-6 mx-auto" style="width: fit-content">
+              <!-- cart icon -->
+              <NuxtLink
+                  to="/shoppingCart"
+                  class="action-icon relative text-gray-800 hover:text-cyan-700 transition-colors"
+                  aria-label="Shopping cart"
+              >
+                <Icon name="heroicons:shopping-cart" class="w-6 h-6" />
+                <span
+                    v-if="cartCount > 0"
+                    class="cart-count absolute -top-2.5 -right-2.5 bg-purple-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+                >
+          {{ cartCount }}
+        </span>
+
+              </NuxtLink>
+              <!-- user icon and dropdown -->
+              <div
+                  class="relative inline-block"
+                  @mouseenter="activeDropdown = 'user'"
+                  @mouseleave="activeDropdown = null"
+              >
+                <NuxtLink
+                    to="/account"
+                    class="action-icon relative text-gray-800 hover:text-cyan-700 transition-colors flex items-center"
+                    aria-label="User account"
+                >
+                  <div class="flex items-center">
+                    <Icon name="heroicons:user-circle" class="w-6 h-6" />
+                    <Icon name="heroicons:chevron-down" class="ml-1 w-4 h-4" />
+                  </div>
+                </NuxtLink>
+
+                <!-- User Dropdown -->
+                <div
+                    v-if="activeDropdown === 'user'"
+                    class="absolute right-0 mt-2 w-40 bg-white border-gray-200 rounded-md shadow-lg z-50 border-x border-b"
+                >
+                  <!-- if not logged in -->
+                  <ul class="py-2 text-sm text-gray-700">
+                    <li><NuxtLink to="/auth" class="block px-4 py-2 hover:bg-gray-100">Register</NuxtLink></li>
+                    <li><NuxtLink to="/auth" class="block px-4 py-2 hover:bg-gray-100">Log in</NuxtLink></li>
+                  </ul>
+
+
+                  <ul v-if="false"
+                      class="py-2 text-sm text-gray-700">
+                    <li><NuxtLink to="/acount/signout" class="block px-4 py-2 hover:bg-gray-100">Sign out</NuxtLink></li>
+                    <li><NuxtLink to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</NuxtLink></li>
+                  </ul>
+
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+
+
+        <!-- Mobile menu -->
+        <div class="icon">
+          <i @click="toggleMobileNav" v-show="mobile" class="hamburger-menu" :class="{ 'icon-active': mobileNav }">
+            <svg viewBox="0 0 100 67" width="40" height="40">
+              <rect y="00" width="100" height="17" rx="10" fill="#ffffff"></rect>
+              <rect y="33" width="100" height="17" rx="10" fill="#ffffff"></rect>
+              <rect y="66" width="100" height="17" rx="10" fill="#ffffff"></rect>
+            </svg>
+          </i>
+        </div>
+      </div>
+
+      <transition name="mobile-nav">
+        <ul v-show="mobileNav" class="dropdown-nav" :class="{ inverted: isHomePage, '': !isHomePage }" ref="dropdownNav">
+          <NuxtLink to="/" title="Homepage">
+            <img src="../assets/img/logo_mobile.png" alt="Logo" id="mobile-logo" @click="toggleMobileNav"/>
+          </NuxtLink>
+          <div class="separator-mobile" />
+          <li v-for="link in links">
+            <NuxtLink @click="toggleMobileNav" class="landmark-mobile" :to="link.path" :aria-label="`Link to ${link.title}`" >{{ link.title }}</NuxtLink>
+          </li>
+          <ul @click="toggleMobileNav" class="close-cross"> &#10006; </ul>
+        </ul>
+      </transition>
+
+      <transition name="dropdown-overlay">
+        <div v-if="mobileNav" class="dropdown-overlay" :class="{ inverted: isHomePage, '': !isHomePage }" @click="toggleMobileNav"></div>
+      </transition>
+    </nav>
+  </header>
+</template>
+
+<script>
+import { useUserStore } from "~/stores/user";
+const userStore = useUserStore();
+
+export default {
+  data() {
+    return {
+      mobile: null,
+      mobileNav: null,
+      windowWidth: null,
+      activeDropdown: null,
+      isHomePage: true,
+      links: [
+        { title: "Home", path: "/" },
+        {
+          title: "Activities", path: "/activities",
+          dropdown:[
+            { title: "Highlights✨", path: "/activities/Highlights" },
+            { title: "Type1", path: "/activities/Type1" },
+            { title: "Type2", path: "/activities/Type2" },
+            { title: "Type3", path: "/activities/Type3" },
+          ]},
+        { title: "Teachers", path: "/teachers" },
+        { title: "About us", path: "/about_us" },
+        { title: "Contact us", path: "/contact_us" },
+      ],
+    };
+  },
+
+  mounted() {
+    if (process.client) {
+      window.addEventListener("resize", this.checkScreen);
+      this.checkScreen();
+      document.addEventListener("click", this.handleClickOutside);
+    }
+  },
+
+  beforeUnmount() {
+    if (process.client) {
+      window.removeEventListener("resize", this.checkScreen);
+      document.removeEventListener("click", this.handleClickOutside);
+    }
+  },
+
+  methods: {
+    toggleMobileNav() {
+      this.mobileNav = !this.mobileNav;
+      if (this.mobileNav) {
+        document.documentElement.style.overflow = "hidden";
+      } else {
+        document.documentElement.style.overflow = "";
+      }
+    },
+
+    checkScreen() {
+      this.windowWidth = document.documentElement.clientWidth;
+      if (this.windowWidth < 850) {
+        this.mobile = true;
+      } else {
+        this.mobile = false;
+        this.mobileNav = false;
+        document.documentElement.style.overflow = "";
+      }
+    },
+
+    handleClickOutside(event) {
+      if (
+          !this.$refs.dropdownNav.contains(event.target) &&
+          !this.$refs.dropdownNav.previousElementSibling.contains(event.target)
+      ) {
+        this.mobileNav = false;
+      }
+    },
+
+
+  },
+};
+</script>
+
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap");
+
+ul{
+  padding: 0;
+}
+
+li{
+  list-style-type: none;
+}
+
+header {
+  max-width: 100%;
+}
+
+
+.logo{
+  display: flex;
+  align-items: center;
+  height: 6vh;
+  width: 6vh;
+}
+
+#desktop-logo {
+  max-width: 100%;
+  max-height: 100%;
+}
+#mobile-logo {
+  margin-top: 20px;
+  max-width: 15vh;
+  max-height: 15vh;
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: space-around;
+  gap: 0.3vw;
+}
+
+.navigation a {
+  color: #000000;
+  text-decoration: none;
+  font-size: 100%;
+  font-family: "Jost";
+  transition: color 0.3s ease;
+}
+
+.navigation a:hover {
+  color: #006A71;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.landmark {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.landmark-container {
+  width: 10vw;
+  height: 5vh;
+  border-radius: 10px;
+  display: block;
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.landmark-container:hover {
+  background-color: #ffffff;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+}
+
+.hamburger-menu {
+  cursor: pointer;
+  transition: 0.5s ease all;
+  padding: 7px 10px;
+  border-radius: 10px;
+}
+
+.hamburger-menu:hover {
+  background-color: #A78BCA;
+}
+
+.hamburger-menu:active {
+  background-color: #A78BCA;
+}
+
+.dropdown-nav {
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  width: 60%;
+  height: 100vh;
+  min-width: 270px;
+  top: 0;
+  left: 0;
+  margin-top: 0;
+  z-index: 500;
+  border-right: 5px solid #A78BCA;
+}
+
+.mobile-nav-enter-active, .mobile-nav-leave-active {
+  transition: 1s ease all;
+}
+
+.mobile-nav-enter-from, .mobile-nav-leave-to {
+  transform: translateX(-100%);
+}
+
+.mobile-nav-enter-to {
+  transform: translateX(0);
+}
+
+.separator-mobile {
+  margin: 3vh 0;
+}
+
+.close-cross {
+  font-size: 4vh;
+  text-align: center;
+  color: #000000;
+  transition: 0.3s;
+  cursor: pointer;
+  padding-top: 3vh;
+}
+
+.close-cross:hover {
+  color: rgb(200, 0, 0);
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  transform: translateY(-5px);
+}
+
+.close-cross:active {
+  transform: scale(0.95);
+}
+
+.dropdown-overlay {
+  filter: invert(0);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.dropdown-overlay-enter-active, .dropdown-overlay-leave-active {
+  transition: opacity 0.5s;
+}
+
+.dropdown-overlay-enter-from, .dropdown-overlay-leave-to {
+  opacity: 0;
+}
+
+.dropdown-overlay-enter-to, .dropdown-overlay-leave-from {
+  opacity: 1;
+}
+
+.landmark-mobile {
+  color: #643173;
+  font-family: "Jost";
+  font-size: 2.5vh;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10% 0;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.landmark-mobile:hover {
+  color: #A78BCA;
+  transform: translateY(-5px);
+}
+.nav-item {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 10;
+  min-width: 150px;
+  padding: 10px 0;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
+}
+
+.dropdown-menu li {
+  padding: 8px 16px;
+}
+
+.dropdown-menu li a {
+  color: #000;
+  text-decoration: none;
+  display: block;
+  font-family: "Jost";
+}
+
+.dropdown-menu li a:hover {
+  color: #006A71;
+  text-decoration: underline;
+}
+
+
+</style>
