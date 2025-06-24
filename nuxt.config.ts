@@ -28,6 +28,7 @@ export default defineNuxtConfig({
     redirect: false
   },
 
+
   // 添加 pinia 类型支持
   typescript: {
     typeCheck: true,

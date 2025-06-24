@@ -37,7 +37,7 @@ const client = useSupabaseClient();
 
 // 使用类型注解
 const { data: allActivities, error } = await useAsyncData<Activity[]>(
-    'all-courses',
+    'allcourses',
     async () => {
       const { data, error } = await client
           .from('Course')

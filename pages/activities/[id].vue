@@ -101,16 +101,10 @@
         <div>Buy Now</div>
       </button>
         <button
-            @click="addToCart()"
-            class="px-6
-                            py-2
-                            text-[#006A71]
-                            text-lg
-                            font-semibold
-                            cursor-pointer
-                       "
+            @click="addToCart"
+            class="px-6 py-2 text-[#006A71] text-lg font-semibold cursor-pointer"
         >
-          <Icon name="heroicons:shopping-cart" class="w-[100px] h-[100px]" />
+          <Icon name="heroicons:shopping-cart" class="w-6 h-6" />
         </button>
       </div>
 
@@ -124,54 +118,58 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useUserStore } from '~/stores/user';
-const userStore = useUserStore();
-const route = useRoute();
+import { ref, computed } from 'vue'
+import { useUserStore } from '~/stores/user'
 
-const loading = ref(false);
+const userStore = useUserStore()
+const route = useRoute()
+const loading = ref(true)
 
+// 1. 使用 useAsyncData 处理异步数据
+const { data: activity } = await useAsyncData(
+    `activity-${route.params.id}`,
+    () => $fetch(`/api/activities/${route.params.id}`)
+)
 
-// 获取活动详情
-const activity = await $fetch("/api/activities/" + route.params.id);
+// 2. 确保数据存在后再计算百分比
+const activityPricePercentage = computed(() => {
+  if (!activity.value?.oldPrice) return 0
+  return ((activity.value.oldPrice - activity.value.price) / activity.value.oldPrice * 100).toFixed(0)
+})
 
-// 价格折扣百分比
-const activityPricePercentage = ((activity.oldPrice - activity.price) / activity.oldPrice * 100).toFixed(0);
+// 3. 安全设置默认图片
+const selectedImg = ref(activity.value?.img?.[0] || '/default-image.jpg')
 
-// 当前选中的图片
-const selectedImg = ref(activity.img[0]);
-
-// 加入购物车函数
+// 4. 优化购物车逻辑
 const addToCart = () => {
-  if (!activity) return;
+  if (!activity.value) return
 
   const item = {
-    id: activity.id,
-    name: activity.name,
-    price: activity.price,
-    image: activity.img?.[0] || '/default-image.jpg',
+    id: activity.value.id,
+    name: activity.value.name,
+    price: activity.value.price,
+    image: activity.value.img?.[0] || '/default-image.jpg',
     quantity: 1
-  };
-
-  // 修复1：使用 userStore.cart 替代 this.cart
-  const existing = userStore.cart.find(i => i.id === item.id);
-
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    // 修复2：使用 userStore.cart 替代 cart
-    userStore.cart.push({ ...item, quantity: 1 });
   }
 
-  console.log("购物车更新:", userStore.cart);
-};
+  const existingIndex = userStore.cart.findIndex(i => i.id === item.id)
 
-// 模拟购买（可自定义 buyNow 行为）
+  if (existingIndex !== -1) {
+    // 创建新数组确保响应式更新
+    const updatedCart = [...userStore.cart]
+    updatedCart[existingIndex].quantity += 1
+    userStore.cart = updatedCart
+  } else {
+    userStore.cart = [...userStore.cart, item]
+  }
+}
+
 const buyNow = () => {
-  console.log("立即购买：", activity);
-  // 例如：跳转至结算页，或者触发立即购买逻辑
-};
+  addToCart()
+  navigateTo('/checkout')
+}
 </script>
+
 
 
 
