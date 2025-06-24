@@ -52,7 +52,7 @@
 
           <!-- user icon and cart icon -->
           <li class="nav-item relative flex-1 text-center">
-            <div class="user-actions flex justify-center space-x-6 mx-auto" style="width: fit-content">
+            <div class="user-actions flex justify-center space-x-6 mx-auto cursor-pointer" style="width: fit-content">
               <!-- cart icon -->
               <NuxtLink
                   to="/shoppingCart"
@@ -71,40 +71,79 @@
               <!-- user icon and dropdown -->
               <div
                   class="relative inline-block"
-                  @mouseenter="activeDropdown = 'user'"
-                  @mouseleave="activeDropdown = null"
+                  ref="userDropdownTrigger"
+                  @mouseenter="!mobile && (isUserDropdownOpen = true)"
+                  @mouseleave="!mobile && (isUserDropdownOpen = false)"
               >
-                <NuxtLink
-                    to="/account"
-                    class="action-icon relative text-gray-800 hover:text-cyan-700 transition-colors flex items-center"
-                    aria-label="User account"
+                <button
+                    @click="toggleUserDropdown"
+                    class="flex items-center focus:outline-none text-gray-800 hover:text-cyan-700 transition-colors "
+                    aria-haspopup="true"
+                    :aria-expanded="isUserDropdownOpen"
                 >
-                  <div class="flex items-center">
-                    <Icon name="heroicons:user-circle" class="w-6 h-6" />
-                    <Icon name="heroicons:chevron-down" class="ml-1 w-4 h-4" />
+                  <Icon name="heroicons:user-circle" class="w-6 h-6 " />
+                  <Icon
+                      name="heroicons:chevron-down"
+                      class="ml-1 w-4 h-4 transition-transform"
+                      :class="{ 'transform rotate-180': isUserDropdownOpen }"
+                  />
+                </button>
+
+                <!-- 下拉菜单内容 -->
+                <transition
+                    enter-active-class="transition duration-100 ease-out"
+                    enter-from-class="transform scale-95 opacity-0"
+                    enter-to-class="transform scale-100 opacity-100"
+                    leave-active-class="transition duration-75 ease-in"
+                    leave-from-class="transform scale-100 opacity-100"
+                    leave-to-class="transform scale-95 opacity-0"
+                >
+                  <div
+                      v-if="isUserDropdownOpen"
+                      ref="userDropdown"
+                      class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200"
+                  >
+                    <!-- 未登录状态 -->
+                    <div v-if="!currentUser" class="py-1">
+                      <NuxtLink
+                          to="/auth"
+                          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          @click="isUserDropdownOpen = false"
+                      >
+                        Register
+                      </NuxtLink>
+                      <NuxtLink
+                          to="/auth"
+                          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          @click="isUserDropdownOpen = false"
+                      >
+                        Log in
+                      </NuxtLink>
+                    </div>
+
+                    <!-- 已登录状态 -->
+                    <div v-if="currentUser" class="py-1">
+                      <div class="px-4 py-2 text-sm text-gray-700 border-b">
+                        Hi, {{ currentUser.email }}
+                      </div>
+                      <NuxtLink
+                          to="/account/profile"
+                          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          @click="isUserDropdownOpen = false"
+                      >
+                        Profile
+                      </NuxtLink>
+                      <button
+                          @click="signOut"
+                          class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign out
+                      </button>
+                    </div>
                   </div>
-                </NuxtLink>
-
-                <!-- User Dropdown -->
-                <div
-                    v-if="activeDropdown === 'user'"
-                    class="absolute right-0 mt-2 w-40 bg-white border-gray-200 rounded-md shadow-lg z-50 border-x border-b"
-                >
-                  <!-- if not logged in -->
-                  <ul class="py-2 text-sm text-gray-700">
-                    <li><NuxtLink to="/auth" class="block px-4 py-2 hover:bg-gray-100">Register</NuxtLink></li>
-                    <li><NuxtLink to="/auth" class="block px-4 py-2 hover:bg-gray-100">Log in</NuxtLink></li>
-                  </ul>
-
-
-                  <ul v-if="false"
-                      class="py-2 text-sm text-gray-700">
-                    <li><NuxtLink to="/acount/signout" class="block px-4 py-2 hover:bg-gray-100">Sign out</NuxtLink></li>
-                    <li><NuxtLink to="/account/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</NuxtLink></li>
-                  </ul>
-
-                </div>
+                </transition>
               </div>
+
             </div>
           </li>
         </ul>
@@ -143,83 +182,122 @@
   </header>
 </template>
 
-<script>
+<script setup>
 import { useUserStore } from "~/stores/user";
-const userStore = useUserStore();
+import { useSupabaseClient, useSupabaseUser } from '#imports'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
-export default {
-  data() {
-    return {
-      mobile: null,
-      mobileNav: null,
-      windowWidth: null,
-      activeDropdown: null,
-      isHomePage: true,
-      links: [
-        { title: "Home", path: "/" },
-        {
-          title: "Activities", path: "/activities",
-          dropdown:[
-            { title: "Highlights✨", path: "/activities/Highlights" },
-            { title: "Type1", path: "/activities/Type1" },
-            { title: "Type2", path: "/activities/Type2" },
-            { title: "Type3", path: "/activities/Type3" },
-          ]},
-        { title: "Teachers", path: "/teachers" },
-        { title: "About us", path: "/about_us" },
-        { title: "Contact us", path: "/contact_us" },
-      ],
-    };
+const userStore = useUserStore()
+const client = useSupabaseClient()
+const user = useSupabaseUser()
+
+// 响应式状态
+const mobile = ref(null)
+const mobileNav = ref(null)
+const windowWidth = ref(null)
+const activeDropdown = ref(null)
+const isHomePage = ref(true)
+const currentUser = ref(user.value)
+const isUserDropdownOpen = ref(false)
+
+const links = ref([
+  { title: "Home", path: "/" },
+  {
+    title: "Activities",
+    path: "/activities",
+    dropdown: [
+      { title: "Highlights✨", path: "/activities/Highlights" },
+      { title: "Type1", path: "/activities/Type1" },
+      { title: "Type2", path: "/activities/Type2" },
+      { title: "Type3", path: "/activities/Type3" },
+    ]
   },
+  { title: "Teachers", path: "/teachers" },
+  { title: "About us", path: "/about_us" },
+  { title: "Contact us", path: "/contact_us" },
+])
 
-  mounted() {
-    if (process.client) {
-      window.addEventListener("resize", this.checkScreen);
-      this.checkScreen();
-      document.addEventListener("click", this.handleClickOutside);
-    }
-  },
+// 计算属性
+const cartCount = computed(() => userStore.cart?.length || 0)
 
-  beforeUnmount() {
-    if (process.client) {
-      window.removeEventListener("resize", this.checkScreen);
-      document.removeEventListener("click", this.handleClickOutside);
-    }
-  },
+// 方法
+const toggleMobileNav = () => {
+  mobileNav.value = !mobileNav.value
+  if (mobileNav.value) {
+    document.documentElement.style.overflow = "hidden"
+  } else {
+    document.documentElement.style.overflow = ""
+  }
+}
 
-  methods: {
-    toggleMobileNav() {
-      this.mobileNav = !this.mobileNav;
-      if (this.mobileNav) {
-        document.documentElement.style.overflow = "hidden";
-      } else {
-        document.documentElement.style.overflow = "";
-      }
-    },
+const checkScreen = () => {
+  windowWidth.value = window.innerWidth
+  mobile.value = windowWidth.value < 850
+  if (!mobile.value) {
+    mobileNav.value = false
+    document.documentElement.style.overflow = ""
+  }
+}
 
-    checkScreen() {
-      this.windowWidth = document.documentElement.clientWidth;
-      if (this.windowWidth < 850) {
-        this.mobile = true;
-      } else {
-        this.mobile = false;
-        this.mobileNav = false;
-        document.documentElement.style.overflow = "";
-      }
-    },
+const handleClickOutside = (event) => {
+  const dropdownNav = document.querySelector('.dropdown-nav')
+  const trigger = document.querySelector('.hamburger-menu')
 
-    handleClickOutside(event) {
-      if (
-          !this.$refs.dropdownNav.contains(event.target) &&
-          !this.$refs.dropdownNav.previousElementSibling.contains(event.target)
-      ) {
-        this.mobileNav = false;
-      }
-    },
+  if (dropdownNav && trigger &&
+      !dropdownNav.contains(event.target) &&
+      !trigger.contains(event.target)) {
+    mobileNav.value = false
+  }
+}
 
+const toggleUserDropdown = () => {
+  isUserDropdownOpen.value = !isUserDropdownOpen.value
+}
 
-  },
-};
+const handleUserDropdownClickOutside = (event) => {
+  const dropdown = document.querySelector('.user-dropdown-content')
+  const trigger = document.querySelector('.user-dropdown-trigger')
+
+  if (dropdown && trigger &&
+      !dropdown.contains(event.target) &&
+      !trigger.contains(event.target)) {
+    isUserDropdownOpen.value = false
+  }
+}
+
+const signOut = async () => {
+  try {
+    await client.auth.signOut()
+    currentUser.value = null
+    isUserDropdownOpen.value = false
+    await navigateTo('/')
+  } catch (error) {
+    console.error('登出失败:', error)
+  }
+}
+
+// 生命周期
+onMounted(() => {
+  // 监听认证状态变化
+  client.auth.onAuthStateChange((event, session) => {
+    currentUser.value = session?.user || null
+  })
+
+  if (process.client) {
+    window.addEventListener("resize", checkScreen)
+    document.addEventListener("click", handleClickOutside)
+    document.addEventListener("click", handleUserDropdownClickOutside)
+    checkScreen()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (process.client) {
+    window.removeEventListener("resize", checkScreen)
+    document.removeEventListener("click", handleClickOutside)
+    document.removeEventListener("click", handleUserDropdownClickOutside)
+  }
+})
 </script>
 
 <style scoped>

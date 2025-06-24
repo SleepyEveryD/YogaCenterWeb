@@ -8,5 +8,7 @@ export const useUserStore = defineStore('user', {
         cart: [],
         checkout: []
     }),
-    persist: true
-})
+    persist: true,
+
+}
+)
