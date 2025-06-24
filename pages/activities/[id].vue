@@ -19,7 +19,7 @@
             class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 py-1  "
         >
           <div
-              v-for="(thumb, index) in activity.img"
+              v-for="(thumb, index) in activity.image"
               :key="index"
               class="w-[56px] h-[40px] overflow-hidden rounded border-2 transition-transform duration-200 hover:scale-110 cursor-pointer"
               :class="{

@@ -126,13 +126,13 @@
                       <div class="px-4 py-2 text-sm text-gray-700 border-b">
                         Hi, {{ currentUser.email }}
                       </div>
-                      <NuxtLink
+                      <!-- <NuxtLink
                           to="/account/profile"
                           class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                           @click="isUserDropdownOpen = false"
                       >
                         Profile
-                      </NuxtLink>
+                      </NuxtLink>-->
                       <button
                           @click="signOut"
                           class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
