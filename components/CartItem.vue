@@ -21,14 +21,14 @@
 
     <img
         class="rounded-md md:w-[150px] w-[90px]"
-        :src="product.url"
+        :src="product.image"
     >
 
     <div class="overflow-hidden pl-2 w-full">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center justify-between truncate">
           <span class="sm:block hidden bg-[#FD374F] text-white text-[9px] font-semibold px-1.5 rounded-sm min-w-[80px]">Welcome Deal</span>
-          <div class="truncate sm:pl-2">{{ product.title }}</div>
+          <div class="truncate sm:pl-2">{{ product.name }}</div>
         </div>
         <button
             @click="removeFromCart()"

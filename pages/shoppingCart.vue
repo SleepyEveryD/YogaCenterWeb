@@ -156,6 +156,7 @@ const selectedRadioFunc = (e) => {
 }
 
 const goToCheckout = () => {
+  consol.log('jjjjjjj')
   let ids = []
   userStore.checkout = []
 
