@@ -7,6 +7,7 @@ export const useUserStore = defineStore('user', {
         isLoading: false
     }),
     actions: {
+
         addToCart(product) {
             const existingItem = this.cart.find(i => i.id === product.id)
             if (existingItem) {

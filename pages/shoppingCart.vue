@@ -46,15 +46,6 @@
 
         </div>
 
-        <div
-            class="rounded-lg p-4 mt-4 h-12 transition-opacity duration-300"
-            :class="errorMessage ? 'bg-[#FEEEEF] opacity-100 visible' : 'opacity-0 invisible'"
-        >
-          <div class="text-red-500 font-bold">
-            {{ errorMessage }}
-          </div>
-        </div>
-
 
         <div id="Items" class="bg-white rounded-lg p-4 mt-4">
           <div v-for="product in userStore.cart">
