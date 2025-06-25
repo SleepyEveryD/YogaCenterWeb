@@ -1,3 +1,5 @@
+// pages/shoppingCart.vue
+
 <template>
 
     <div id="ShoppingCartPage" class="mt-4 max-w-[1200px] mx-auto px-2">
@@ -121,7 +123,6 @@ let selectedArray = ref([])
 
 onMounted(() => {
   setTimeout(() => userStore.isLoading = false, 200)
-  userStore.initCart()
 })
 
 const cards = ref([
@@ -136,7 +137,7 @@ const totalPriceComputed = computed(() => {
   userStore.cart.forEach(prod => {
     price += prod.price
   })
-  return price / 100
+  return price
 })
 
 const selectedRadioFunc = (e) => {
@@ -156,10 +157,9 @@ const selectedRadioFunc = (e) => {
 }
 
 const goToCheckout = () => {
-  consol.log('jjjjjjj')
   let ids = []
   userStore.checkout = []
-
+  console.log(selectedArray.value)
   selectedArray.value.forEach(item => ids.push(item.id))
 
   let res = userStore.cart.filter((item) => {
@@ -170,4 +170,6 @@ const goToCheckout = () => {
 
   return navigateTo('/checkout')
 }
+
+
 </script>

@@ -165,7 +165,7 @@
       <transition name="mobile-nav">
         <ul v-show="mobileNav" class="dropdown-nav" :class="{ inverted: isHomePage, '': !isHomePage }" ref="dropdownNav">
           <NuxtLink to="/" title="Homepage">
-            <img src="../assets/img/logo_mobile.png" alt="Logo" id="mobile-logo" @click="toggleMobileNav"/>
+            <img src="../assets/img/logo.png" alt="Logo" id="mobile-logo" @click="toggleMobileNav"/>
           </NuxtLink>
           <div class="separator-mobile" />
           <li v-for="link in links">

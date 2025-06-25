@@ -14,10 +14,6 @@
         <div id="PlaceOrder" class="bg-white rounded-lg p-4">
           <div class="text-2xl font-extrabold mb-2">Summary</div>
 
-          <div class="flex items-center justify-between my-4">
-            <div class="">Total Shipping</div>
-            <div class="">Free</div>
-          </div>
 
           <div class="border-t" />
 
@@ -64,9 +60,9 @@
         </div>
 
         <div class="bg-white rounded-lg p-4 mt-4">
-          <div class="text-lg font-semibold mb-2 mt-2">AliExpress</div>
+          <div class="text-lg font-semibold mb-2 mt-2">YogaCenter</div>
           <p class="my-2">
-            AliExpress keeps your information and payment safe
+            YogaCenter keeps your information and payment safe
           </p>
         </div>
       </div>
@@ -117,7 +113,8 @@ watch(() => total.value, () => {
 
 const stripeInit = async () => {
   const runtimeConfig = useRuntimeConfig()
-  stripe = Stripe(runtimeConfig.stripePk);
+  stripe = Stripe("pk_test_51RdXzM09jgJoUN2h9m0Zldt2FhrMbW68VzEdmdyseqzLeqTPUjvd7UMsGoLmXjxmQQVl86tNmHZSgVBSB3eu0MBS00qKorwOb5");
+
 
   let res = await $fetch('/api/stripe/paymentintent', {
     method: 'POST',

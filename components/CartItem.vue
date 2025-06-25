@@ -27,8 +27,8 @@
     <div class="overflow-hidden pl-2 w-full">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center justify-between truncate">
-          <span class="sm:block hidden bg-[#FD374F] text-white text-[9px] font-semibold px-1.5 rounded-sm min-w-[80px]">Welcome Deal</span>
-          <div class="truncate sm:pl-2">{{ product.name }}</div>
+          <span v-if="product.oldPrice" class="sm:block hidden bg-[#FD374F] text-white text-[9px] font-semibold px-1.5 rounded-sm min-w-[50px] content-center">Discount</span>
+          <div class="truncate sm:pl-2 font-bold">{{ product.name }}</div>
         </div>
         <button
             @click="removeFromCart()"
@@ -38,17 +38,14 @@
         </button>
       </div>
 
-      <div class="text-xl font-semibold">
-        $ <span class="font-bold">{{ product.price / 100 }}</span>
+      <div class="text-xl space-x-1">
+        <span :class="[ product.oldPrice ? 'text-red-500' : 'text-black']">${{ product.price }}</span>
+        <span
+            v-if="product.oldPrice"
+            class="text-gray-500 text-sm text-light line-through">${{ product.oldPrice }}</span>
+
       </div>
 
-      <p class="text-[#009A66] text-xs font-semibold pt-1">
-        Free 11-day delivery over ￡8.28
-      </p>
-
-      <p class="text-[#009A66] text-xs font-semibold pt-1">
-        Free Shipping
-      </p>
 
       <div class="flex items-center justify-end">
         <button

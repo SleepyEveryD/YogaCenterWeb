@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
@@ -17,8 +18,10 @@ export default defineNuxtConfig({
     'nuxt-lodash',
     '@nuxtjs/supabase',
     '@nuxtjs/tailwindcss',
-    // 移除 '@pinia-plugin-persistedstate/nuxt' (已废弃)
+    '@nuxt/test-utils/module',
   ],
+
+
 
   // 更新 pinia 配置方式
   imports: {
@@ -36,20 +39,28 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         types: [
-            "node",
-            '@pinia/nuxt',
-            '@nuxt/content',
-            '@nuxt/ui'
+          "node",
+          '@nuxt/schema',
+          '@pinia/nuxt',
+          '@nuxt/content',
+          '@nuxt/ui'
         ]
       }
     }
   },
 
   runtimeConfig: {
+
+    supabase: {
+      url: process.env.SUPABASE_URL,
+      key: process.env.SUPABASE_KEY,
+      serviceKey: process.env.SUPABASE_SERVICE_KEY,
+      redirect: false
+    },
     public: {
-      stripePk: process.env.STRIPE_PK_KEY,
       supabaseUrl: process.env.SUPABASE_URL,
-      supabaseKey: process.env.SUPABASE_KEY
+      supabaseKey: process.env.SUPABASE_KEY,
+      stripePk: process.env.STRIPE_PK_KEY
     }
   },
   vite: {

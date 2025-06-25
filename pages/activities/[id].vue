@@ -148,6 +148,7 @@ const addToCart = () => {
     id: activity.value.id,
     name: activity.value.name,
     price: activity.value.price,
+    oldPrice: activity.value.oldPrice,
     image: activity.value.img?.[0] || '/default-image.jpg',
     quantity: 1
   }
