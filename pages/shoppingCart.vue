@@ -2,21 +2,21 @@
 
 <template>
 
-    <div id="ShoppingCartPage" class="mt-4 max-w-[1200px] mx-auto px-2">
-      <div v-if="!userStore.cart.length" class="h-[500px] flex items-center justify-center">
-        <div class="pt-20 items-center">
-          <img
-              class="mx-auto"
-              width="250"
-              src="assets/img/empty-cart.png"
-          >
+  <div id="ShoppingCartPage" class="mt-4 max-w-[1200px] mx-auto px-2">
+    <div v-if="!userStore.cart.length" class="h-[500px] flex items-center justify-center">
+      <div class="pt-20 items-center">
+        <img
+            class="mx-auto"
+            width="250"
+            src="assets/img/empty-cart.png"
+        >
 
-          <div class="text-xl text-center mt-4">No items yet?</div>
+        <div class="text-xl text-center mt-4">No items yet?</div>
 
-          <div v-if="!user" class="flex text-center">
-            <NuxtLink
-                to="/auth"
-                class="
+        <div v-if="!user" class="flex text-center">
+          <NuxtLink
+              to="/auth"
+              class="
                                 bg-[#48A6A7]
                                 w-full
                                 text-white
@@ -28,52 +28,58 @@
                                 py-2
 
                             "
-            >
-              Sign in
-            </NuxtLink>
+          >
+            Sign in
+          </NuxtLink>
 
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="md:flex gap-4 justify-between mx-auto w-full">
+      <div class="md:w-[65%]">
+        <div class="bg-white rounded-lg p-4">
+
+          <div class="text-2xl font-bold mb-2">
+            Shopping Cart ({{ userStore.cart.length }})
+          </div>
+
+        </div>
+
+        <div
+            class="rounded-lg p-4 mt-4 h-12 transition-opacity duration-300"
+            :class="errorMessage ? 'bg-[#FEEEEF] opacity-100 visible' : 'opacity-0 invisible'"
+        >
+          <div class="text-red-500 font-bold">
+            {{ errorMessage }}
+          </div>
+        </div>
+
+
+        <div id="Items" class="bg-white rounded-lg p-4 mt-4">
+          <div v-for="product in userStore.cart">
+            <CartItem
+                :product="product"
+                :selectedArray="selectedArray"
+                @selectedRadio="selectedRadioFunc"
+            />
           </div>
         </div>
       </div>
 
-      <div v-else class="md:flex gap-4 justify-between mx-auto w-full">
-        <div class="md:w-[65%]">
-          <div class="bg-white rounded-lg p-4">
-
-            <div class="text-2xl font-bold mb-2">
-              Shopping Cart ({{ userStore.cart.length }})
-            </div>
-
-          </div>
-
-          <div class="bg-[#FEEEEF] rounded-lg p-4 mt-4">
-            <div class="text-red-500 font-bold">Welcome Deal applicable on 1 item only</div>
-          </div>
-
-          <div id="Items" class="bg-white rounded-lg p-4 mt-4">
-            <div v-for="product in userStore.cart">
-              <CartItem
-                  :product="product"
-                  :selectedArray="selectedArray"
-                  @selectedRadio="selectedRadioFunc"
-              />
+      <div class="md:hidden block my-4"/>
+      <div class="md:w-[35%]">
+        <div id="Summary" class="bg-white rounded-lg p-4">
+          <div class="text-2xl font-extrabold mb-2">Summary</div>
+          <div class="flex items-center justify-between my-4">
+            <div class="font-semibold">Total</div>
+            <div class="text-2xl font-semibold">
+              $ <span class="font-extrabold">{{ totalPriceComputed }}</span>
             </div>
           </div>
-        </div>
-
-        <div class="md:hidden block my-4"/>
-        <div class="md:w-[35%]">
-          <div id="Summary" class="bg-white rounded-lg p-4">
-            <div class="text-2xl font-extrabold mb-2">Summary</div>
-            <div class="flex items-center justify-between my-4">
-              <div class="font-semibold">Total</div>
-              <div class="text-2xl font-semibold">
-                $ <span class="font-extrabold">{{ totalPriceComputed }}</span>
-              </div>
-            </div>
-            <button
-                @click="goToCheckout"
-                class="
+          <button
+              @click="goToCheckout"
+              class="
                                 flex
                                 items-center
                                 justify-center
@@ -86,31 +92,31 @@
                                 rounded-full
                                 mt-4
                             "
-            >
-              Checkout
-            </button>
-          </div>
+          >
+            Checkout
+          </button>
+        </div>
 
-          <div id="PaymentProtection" class="bg-white rounded-lg p-4 mt-4">
+        <div id="PaymentProtection" class="bg-white rounded-lg p-4 mt-4">
 
-            <div class="text-lg font-semibold mb-2">Payment methods</div>
-            <div class="flex items-center justify-start gap-8 my-4">
-              <div v-for="card in cards">
-                <img class="h-6" :src="card">
-              </div>
+          <div class="text-lg font-semibold mb-2">Payment methods</div>
+          <div class="flex items-center justify-start gap-8 my-4">
+            <div v-for="card in cards">
+              <img class="h-6" :src="card">
             </div>
-
-            <div class="border-b"/>
-
-            <div class="text-lg font-semibold mb-2 mt-2">Buyer Protection</div>
-            <p class="my-2">
-              Get full refund if the item is not as described or if is not delivered
-            </p>
-
           </div>
+
+          <div class="border-b"/>
+
+          <div class="text-lg font-semibold mb-2 mt-2">Buyer Protection</div>
+          <p class="my-2">
+            Get full refund if the item is not as described or if is not delivered
+          </p>
+
         </div>
       </div>
     </div>
+  </div>
 
 </template>
 

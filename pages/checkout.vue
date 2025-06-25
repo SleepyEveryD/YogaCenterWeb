@@ -20,7 +20,7 @@
           <div class="flex items-center justify-between my-4">
             <div class="font-semibold">Total</div>
             <div class="text-2xl font-semibold">
-              $ <span class="font-extrabold">{{ total / 100 }}</span>
+              $ <span class="font-extrabold">{{ total }}</span>
             </div>
           </div>
 
@@ -50,6 +50,7 @@
                   font-semibold
                   p-1.5
                   rounded-full
+                  cursor-pointer
                 "
                 :class="isProcessing ? 'opacity-70' : 'opacity-100'"
             >
