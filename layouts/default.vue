@@ -13,8 +13,23 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import Footer from "~/components/Footer.vue";
+import { useUserStore } from '@/stores/user'
+
+const client = useSupabaseClient()
+const user = useSupabaseUser()
+const userStore = useUserStore()
+
+let hasMergedCart = false
+
+watchEffect(async () => {
+  if (user.value && !hasMergedCart) {
+    hasMergedCart = true
+    console.log('检测到用户已登录，开始合并购物车：', user.value.id)
+    await userStore.mergeCartAfterLogin(user.value.id, client)
+  }
+})
 </script>
 
 <style>

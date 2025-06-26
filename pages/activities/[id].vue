@@ -141,7 +141,11 @@ const activityPricePercentage = computed(() => {
 const selectedImg = ref(activity.value?.img?.[0] || '/default-image.jpg')
 
 // 4. 优化购物车逻辑
-const addToCart = () => {
+const client = useSupabaseClient()
+const user = useSupabaseUser()
+
+
+const addToCart = async () => {
   if (!activity.value) return
 
   const item = {
@@ -156,14 +160,44 @@ const addToCart = () => {
   const existingIndex = userStore.cart.findIndex(i => i.id === item.id)
 
   if (existingIndex !== -1) {
-    // 创建新数组确保响应式更新
+    // 更新本地 cart 数量
     const updatedCart = [...userStore.cart]
     updatedCart[existingIndex].quantity += 1
     userStore.cart = updatedCart
+
+    // 如果已登录，则更新数据库中的对应项数量
+    if (user.value) {
+      const { error } = await client
+          .from('carts')
+          .update({
+            quantity: updatedCart[existingIndex].quantity
+          })
+          .eq('user_id', user.value.id)
+          .eq('course_id', item.id)
+
+      if (error) console.error('更新数据库购物车失败:', error)
+    }
+
   } else {
+    // 添加新项到本地 cart
     userStore.cart = [...userStore.cart, item]
+
+    // 如果已登录，则插入数据库
+    if (user.value) {
+      const { error } = await client
+          .from('carts')
+          .insert({
+            user_id: user.value.id,
+            course_id: item.id,
+            quantity: item.quantity,
+            price: item.price
+          })
+
+      if (error) console.error('插入数据库购物车失败:', error)
+    }
   }
 }
+
 
 const buyNow = () => {
   addToCart()

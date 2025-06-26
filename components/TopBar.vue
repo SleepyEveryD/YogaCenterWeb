@@ -270,6 +270,7 @@ const signOut = async () => {
     await client.auth.signOut()
     currentUser.value = null
     isUserDropdownOpen.value = false
+    userStore.cart = []
     await navigateTo('/')
   } catch (error) {
     console.error('登出失败:', error)
