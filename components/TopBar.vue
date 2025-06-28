@@ -186,6 +186,8 @@
 import { useUserStore } from "~/stores/user";
 import { useSupabaseClient, useSupabaseUser } from '#imports'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { overrideCartBeforeSignOut } from '@/utils/overrideCartBeforeSignOut'
+
 
 const userStore = useUserStore()
 const client = useSupabaseClient()
@@ -267,14 +269,18 @@ const handleUserDropdownClickOutside = (event) => {
 
 const signOut = async () => {
   try {
+    const userId = user.value?.id
+    await overrideCartBeforeSignOut(userId, userStore.cart, client)
+
     await client.auth.signOut()
-    currentUser.value = null
-    isUserDropdownOpen.value = false
+    localStorage.removeItem('hasMergedCart')
+    userStore.cart = []
+
     await navigateTo('/')
-    userStore.handleLogout()
   } catch (error) {
     console.error('登出失败:', error)
   }
+
 }
 
 // 生命周期

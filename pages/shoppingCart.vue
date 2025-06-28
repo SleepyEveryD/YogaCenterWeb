@@ -115,6 +115,7 @@ import { useUserStore } from '~/stores/user';
 const userStore = useUserStore()
 const user = useSupabaseUser()
 
+
 let selectedArray = ref([])
 
 onMounted(() => {
@@ -157,6 +158,7 @@ const goToCheckout = () => {
   userStore.checkout = []
   console.log(selectedArray.value)
   selectedArray.value.forEach(item => ids.push(item.id))
+
 
   let res = userStore.cart.filter((item) => {
     return ids.indexOf(item.id) != -1
