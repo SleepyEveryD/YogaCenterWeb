@@ -22,17 +22,35 @@ const client = useSupabaseClient()
 const user = useSupabaseUser()
 const userStore = useUserStore()
 
-let hasMergedCart = false
+const hasMergedCart = ref(false)
 
 watchEffect(async () => {
-  if (user.value && !hasMergedCart) {
-    hasMergedCart = true
-    console.log('检测到用户已登录，开始合并购物车：', user.value.id)
-    await userStore.mergeCartAfterLogin(user.value.id, client)
+  // 只在客户端 & 已登录 & 尚未 merge
+  if (
+      user.value &&
+      process.client &&
+      !localStorage.getItem('hasMergedCart') &&
+      !hasMergedCart.value
+  ) {
+    hasMergedCart.value = true
+    console.log('🛒 检测到用户已登录，开始合并购物车：', user.value.id)
+
+    try {
+      console.log('🛒 开始合并购物车...')
+      await userStore.mergeCartAfterLogin(user.value.id, client)
+
+      // ✅ merge 成功后打标记
+      localStorage.setItem('hasMergedCart', 'true')
+
+
+    } catch (err) {
+      console.error('🛑 mergeCartAfterLogin 执行失败：', err)
+    }
   }
 })
-
 </script>
+
+
 
 <style>
 /* 可选：添加全局样式确保一致的外观 */

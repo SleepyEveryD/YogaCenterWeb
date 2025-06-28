@@ -1,7 +1,8 @@
 // utils/overrideCartBeforeSignOut.js
 
 export async function overrideCartBeforeSignOut(userId, cart, supabaseClient) {
-    if (!userId || !cart || cart.length === 0) {
+    console.log('overrideCartBeforeSignOut called', userId, cart)
+    if (!userId ) {
         console.warn('无法覆盖服务器购物车：缺少 userId 或 cart 内容为空')
         return
     }
@@ -17,7 +18,7 @@ export async function overrideCartBeforeSignOut(userId, cart, supabaseClient) {
             console.error('删除服务器购物车失败:', deleteError)
             return
         }
-
+        if (!cart || cart.length === 0) return
         // Step 2: 插入当前前端 cart 数据
         const toInsert = cart.map(item => ({
             user_id: userId,

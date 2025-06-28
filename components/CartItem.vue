@@ -21,7 +21,7 @@
 
     <img
         class="rounded-md md:w-[150px] w-[90px]"
-        :src="product.img[0]"
+        :src="product.image "
     >
 
     <div class="overflow-hidden pl-2 w-full">
@@ -65,6 +65,7 @@ const userStore = useUserStore()
 
 const props = defineProps(['product', 'selectedArray'])
 const { product, selectedArray } = toRefs(props)
+console.log('prpduct>',product.value)
 
 const emit = defineEmits(['selectedRadio'])
 

@@ -53,12 +53,9 @@ export const useUserStore = defineStore('user', {
                 }
             }
 
+
             const courseIds = serverCart.map(item => item.course_id)
 
-            if (courseIds.length === 0) {
-                this.cart = []
-                return
-            }
 
             // 查询 Course 表，获取完整课程信息
             const {data: courseInfos, error: courseError} = await client
@@ -73,21 +70,48 @@ export const useUserStore = defineStore('user', {
 
             // 合并课程信息和购物车信息
             this.$patch(state => {
-                state.cart = serverCart.map(item => {
+                // 把 serverCart 转换为本地格式
+                const serverCartFormatted = serverCart.map(item => {
                     const course = courseInfos.find(c => c.id === item.course_id)
                     return {
                         id: item.course_id,
                         quantity: item.quantity,
                         price: item.price,
+                        image: Array.isArray(course?.img) ? course.img[0] : null,
                         ...course
                     }
                 })
+
+                // 合并逻辑：优先保留数量大的，价格保留服务器价格
+                const mergedMap = new Map()
+
+                // 先加上本地购物车
+                state.cart.forEach(item => {
+                    mergedMap.set(item.id, { ...item })
+                })
+
+                // 再合并服务器购物车
+                serverCartFormatted.forEach(item => {
+                    if (mergedMap.has(item.id)) {
+                        const localItem = mergedMap.get(item.id)
+                        mergedMap.set(item.id, {
+                            ...item,
+                            quantity: Math.max(localItem.quantity, item.quantity),
+                        })
+                    } else {
+                        mergedMap.set(item.id, { ...item })
+                    }
+                })
+
+                // 更新最终 cart
+                state.cart = Array.from(mergedMap.values())
             })
 
+            console.log('cart after merge:', this.cart)
+        }
 
-        },
     },
     persist: {
-        paths: ['cart', 'checkout']  // ✅ 只持久化这两个字段
+        paths: ['cart']
     }
 })

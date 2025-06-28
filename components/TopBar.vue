@@ -270,11 +270,13 @@ const handleUserDropdownClickOutside = (event) => {
 const signOut = async () => {
   try {
     const userId = user.value?.id
+    console.log('userId:', userId)
     await overrideCartBeforeSignOut(userId, userStore.cart, client)
 
-    await client.auth.signOut()
+
     localStorage.removeItem('hasMergedCart')
-    userStore.cart = []
+    userStore.clearCart()
+    await client.auth.signOut()
 
     await navigateTo('/')
   } catch (error) {
