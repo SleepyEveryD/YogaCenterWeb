@@ -1,9 +1,7 @@
 
 <template>
-  <div class="container">
 
-  </div>
-  <div class="container">
+  <div >
     <PageTitle :short-description="'They are all the best activities in the world'" :title="'Activities'" />
   </div>
 
