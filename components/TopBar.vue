@@ -1,9 +1,9 @@
 <template>
   <header>
 
-    <nav class="fixed top-0 left-0 w-full z-50 bg-white shadow-md ">
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white shadow-md border-b-[5px] border-b-[#48A6A7]">
+      <div class="w-full max-w-[1184px] mx-auto px-4 pt-6 flex items-center justify-between bg-white text-white">
 
-    <div class=" px-32 pt-6 flex items-center justify-between  bg-white border-b-[5px] border-b-[#48A6A7] text-white " >
 
 
         <!-- Desktop elements -->
