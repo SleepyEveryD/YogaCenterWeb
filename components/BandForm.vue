@@ -5,9 +5,9 @@
       <p class="description">We are here to help you! If you have any questions, information requests, or need assistance, please don't hesitate to contact us. Fill out the form below with your details, and our support team will respond as soon as possible. We are committed to providing you with fast and efficient service. Thank you for choosing to contact us! </p>
       <h3 class="title-page-2">contact.mail@mail.com</h3>
       <div class="socials">
-        <a href="https://www.instagram.com" target=”_blank” aria-label="Link to Instagram"><img src="../assets/img/contacts/instagram_logo_hover.png" alt="Instagram Logo" class="instagram-footer"></a>
-        <a href="https://www.facebook.com" target=”_blank” aria-label="Link to Facebook"><img src="../assets/img/contacts/facebook_logo_hover.png" alt="Facebook Logo" class="facebook-footer"></a>
-        <a href="https://twitter.com/home" target=”_blank” aria-label="Link to Twitter"><img src="../assets/img/contacts/twitter_logo_hover.png" alt="Twitter Logo" class="twitter-footer"></a>
+        <a href="https://www.instagram.com" target=”_blank” aria-label="Link to Instagram"><img src="../public/img/contacts/instagram_logo_hover.png" alt="Instagram Logo" class="instagram-footer"></a>
+        <a href="https://www.facebook.com" target=”_blank” aria-label="Link to Facebook"><img src="../public/img/contacts/facebook_logo_hover.png" alt="Facebook Logo" class="facebook-footer"></a>
+        <a href="https://twitter.com/home" target=”_blank” aria-label="Link to Twitter"><img src="../public/img/contacts/twitter_logo_hover.png" alt="Twitter Logo" class="twitter-footer"></a>
       </div>
     </div>
 

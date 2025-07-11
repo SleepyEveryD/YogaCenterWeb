@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <TextOverImg :text=" 'You only live once.But if you do it right,once is enough.'" :img="'assets/img/course/9.jpg'" />
+    <TextOverImg :text=" 'You only live once.But if you do it right,once is enough.'" :img="'/img/course/9.jpg'" />
   </div>
   <div class="container">
     <ActivitiesSection />
     <LeftImageRightText
-        imageUrl="assets/img/course/6.avif"
+        imageUrl="/img/course/6.avif"
         imageAlt=""
         title="Practice anywhere you want: in-studio, live streaming, or video"
         description="Puoi seguire la lezione in studio a Milano oppure praticare in diretta streaming. Con i video on demand puoi rivedere le lezioni registrate e accedere a brevi video con pratiche e approfondimenti."

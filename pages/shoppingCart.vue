@@ -8,7 +8,7 @@
         <img
             class="mx-auto"
             width="250"
-            src="assets/img/empty-cart.png"
+            src="/cart-empty.png"
         >
 
         <div class="text-xl text-center mt-4">No items yet?</div>

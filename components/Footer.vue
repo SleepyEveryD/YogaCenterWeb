@@ -17,12 +17,12 @@
       </div>
       <div class="socials">
         <a href="https://www.instagram.com" target="”_blank”" aria-label="Link to Instagram">
-          <img src="../assets/img/contacts/instagram_logo_hover.png" width="512" height="512" alt="Instagram Logo" class="instagram-footer"/>
+          <img src="../public/img/contacts/instagram_logo_hover.png" width="512" height="512" alt="Instagram Logo" class="instagram-footer"/>
         </a>
         <a href="https://www.facebook.com" target="”_blank”" aria-label="Link to Facebook">
-          <img src="../assets/img/contacts/facebook_logo_hover.png" width="512" height="512" alt="Facebook Logo" class="facebook-footer"/></a>
+          <img src="../public/img/contacts/facebook_logo_hover.png" width="512" height="512" alt="Facebook Logo" class="facebook-footer"/></a>
         <a href="https://twitter.com/home" target="”_blank”" aria-label="Link to Twitter">
-          <img src="../assets/img/contacts/twitter_logo_hover.png" width="512" height="512" alt="Twitter Logo" class="twitter-footer"/>
+          <img src="../public/img/contacts/twitter_logo_hover.png" width="512" height="512" alt="Twitter Logo" class="twitter-footer"/>
         </a>
       </div>
     </div>
