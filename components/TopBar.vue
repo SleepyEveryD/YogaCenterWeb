@@ -155,7 +155,9 @@
               <li
                   v-for="link in links"
                   :key="link.path"
-                  class="text-center py-2 border-t border-gray-100"
+                  class="relative text-center py-2 border-t border-gray-100"
+                  @mouseenter="activeDropdown = link.title"
+                  @mouseleave="activeDropdown = null"
               >
                 <NuxtLink
                     class="landmark flex items-center justify-center text-gray-800 hover:text-cyan-700"
@@ -165,14 +167,15 @@
                   {{ link.title }}
                   <Icon
                       v-if="link.dropdown"
-                      name="heroicons:chevron-down"
+                      name="heroicons:chevron-right"
                       class="ml-1 w-4 h-4"
                   />
                 </NuxtLink>
-                <!-- Dropdown -->
+
+                <!-- 子菜单显示在右边 -->
                 <ul
                     v-if="link.dropdown && activeDropdown === link.title"
-                    class="dropdown-menu absolute top-full left-0 bg-white border border-gray-200 shadow-lg z-10 min-w-[150px] py-2"
+                    class="absolute top-0 left-full bg-white border border-gray-200 shadow-lg z-50 min-w-[150px] py-2"
                 >
                   <li v-for="sublink in link.dropdown" :key="sublink.path">
                     <NuxtLink
@@ -187,11 +190,15 @@
 
               <!-- 关闭按钮 -->
               <li class="text-center mt-4">
-                <button @click="toggleMobileNav" class="text-gray-500 text-sm hover:text-red-500">
+                <button
+                    @click="toggleMobileNav"
+                    class="text-gray-500 text-sm hover:text-red-500"
+                >
                   &#10006; Close
                 </button>
               </li>
             </ul>
+
           </div>
 
           <!-- ✅ Right side: cart & user -->
