@@ -3,7 +3,9 @@
   <div class="min-h-screen flex flex-col">
     <TopBar />
 
+
     <main class="flex-1 mx-auto w-full max-w-[1200px] px-4 py-6">
+      <Breadcrumbs />
       <div class="container">
         <!-- 你的主要内容 -->
       </div>

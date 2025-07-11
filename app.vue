@@ -24,6 +24,10 @@ const userStore = useUserStore()
 
 const route = useRoute()
 
+useHead({
+  title: 'YogaCenter'
+})
+
 let windowWidth = ref(process.client ? window.innerWidth : '')
 
 onMounted(() => {
