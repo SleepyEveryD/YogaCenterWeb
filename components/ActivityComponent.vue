@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden relative">
+  <div class="w-full h-[500px] flex flex-col bg-white rounded-xl shadow-md overflow-hidden relative">
     <!-- 星星图标 -->
     <div
         v-if="activity.star"
@@ -17,7 +17,7 @@
     <!-- 图片区域 -->
     <NuxtLink
         :to="`/activities/${activity.id}`"
-        class="relative h-48 w-full bg-gray-200 overflow-hidden block"
+        class="relative h-60 w-full bg-gray-200 overflow-hidden block"
     >
       <img
           class="absolute h-full w-full object-cover transition-transform duration-500 ease-in-out transform hover:scale-110"
@@ -33,31 +33,33 @@
     </NuxtLink>
 
     <!-- 主要内容 -->
-    <div class="p-6">
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">{{activity.name}}</h3>
+    <div class="p-6 flex-1 flex flex-col">
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">{{ activity.name }}</h3>
 
-      <p class="text-gray-600 mb-6">
-        {{activity.description}}
+      <p class="text-gray-600 mb-6 line-clamp-3">
+        {{ activity.description }}
       </p>
-      <!-- price -->
-      <div class="flex items-center justify-start gap-3 px-1 ">
+
+      <div class="flex items-center justify-start gap-3 px-1 mb-4">
         <span :class="['font-semibold', activity.oldPrice ? 'text-red-500' : 'text-black']">${{ activity.price }}</span>
         <span
             v-if="activity.oldPrice"
-            class="text-gray-500 text-sm text-light line-through">${{ activity.oldPrice }}</span>
+            class="text-gray-500 text-sm text-light line-through"
+        >
+      ${{ activity.oldPrice }}
+    </span>
       </div>
 
-      <!-- 作者列表 -->
-      <div class="border-t border-gray-100 pt-4 ">
+      <!-- ✅ 作者列表固定到底部上方 -->
+      <div class="border-t border-gray-100 pt-3 mt-auto">
         <div class="flex flex-wrap gap-3 items-center">
-          <!-- 作者-->
           <div v-for="(teach, index) in activity.Teach" :key="index">
             <TeacherAvatar :teacher="teach.Teacher" />
           </div>
-
         </div>
       </div>
     </div>
+
   </div>
 </template>
 

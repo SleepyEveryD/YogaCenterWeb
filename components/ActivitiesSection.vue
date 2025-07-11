@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div id="IndexPage" class="mt-4 max-w-[1200px] mx-auto px-2">
-      <div class="grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
+      <div class="h-[540px] grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
         <div v-for="activity in displayedActivities" :key="activity.id">
           <ActivityComponent :activity="activity"/>
         </div>
