@@ -1,29 +1,28 @@
 <template>
   <header>
-
     <nav class="fixed top-0 left-0 w-full z-50 bg-white shadow-md border-b-[5px] border-b-[#48A6A7]">
-      <div class="w-full max-w-[1184px] mx-auto px-4 pt-6 flex items-center justify-between bg-white text-white">
+      <div class="w-full max-w-[1184px] mx-auto px-4 pt-6 bg-white text-white">
 
-
-
-        <!-- Desktop elements -->
-        <ul v-if="!mobile" class="navigation flex items-center w-full "> <!-- 添加 px-4 左右内边距 -->
-          <!-- 常规导航项 -->
+        <!-- ✅ Desktop Topbar (仅中等及以上屏幕显示) -->
+        <div class="hidden md:flex items-center justify-between w-full">
+          <!-- Logo -->
           <div class="logo">
             <NuxtLink to="/" title="Homepage">
-              <img src="../public/img/logo.png" alt="Logo" id="desktop-logo"/>
+              <img src="../public/img/logo.png" alt="Logo" id="desktop-logo" />
             </NuxtLink>
           </div>
-          <li
-              v-for="link in links"
-              :key="link.path"
-              class="nav-item relative flex-1 text-center"
-              @mouseenter="activeDropdown = link.title"
-              @mouseleave="activeDropdown = null"
-          >
-            <div class="landmark-container mx-auto" style="width: fit-content"> <!-- 添加 mx-auto 使内容居中 -->
+
+          <!-- Navigation links -->
+          <ul class="navigation flex items-center space-x-6">
+            <li
+                v-for="link in links"
+                :key="link.path"
+                class="nav-item relative"
+                @mouseenter="activeDropdown = link.title"
+                @mouseleave="activeDropdown = null"
+            >
               <NuxtLink
-                  class="landmark flex items-center justify-center"
+                  class="landmark flex items-center justify-center text-gray-800 hover:text-cyan-700"
                   :to="link.path"
                   :aria-label="`Link to ${link.title}`"
               >
@@ -31,157 +30,158 @@
                 <Icon
                     v-if="link.dropdown"
                     name="heroicons:chevron-down"
-                    class="dropdown-icon ml-1 w-4 h-4"
+                    class="ml-1 w-4 h-4"
                 />
               </NuxtLink>
-            </div>
 
-            <ul
-                v-if="link.dropdown && activeDropdown === link.title"
-                class="dropdown-menu absolute top-full left-0 bg-white border border-gray-200 shadow-lg z-10 min-w-[150px] py-2"
-            >
-              <li v-for="sublink in link.dropdown" :key="sublink.path">
-                <NuxtLink
-                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-cyan-700"
-                    :to="sublink.path"
-                >
-                  {{ sublink.title }}
-                </NuxtLink>
-              </li>
-            </ul>
-          </li>
-
-          <!-- user icon and cart icon -->
-          <li class="nav-item relative flex-1 text-center">
-            <div class="user-actions flex justify-center space-x-6 mx-auto cursor-pointer" style="width: fit-content">
-              <!-- cart icon -->
-              <NuxtLink
-                  to="/shoppingCart"
-                  class="action-icon relative text-gray-800 hover:text-cyan-700 transition-colors"
-                  aria-label="Shopping cart"
+              <!-- Dropdown -->
+              <ul
+                  v-if="link.dropdown && activeDropdown === link.title"
+                  class="dropdown-menu absolute top-full left-0 bg-white border border-gray-200 shadow-lg z-10 min-w-[150px] py-2"
               >
-                <Icon name="heroicons:shopping-cart" class="w-6 h-6" />
-                <span
-                    v-if="cartCount > 0"
-                    class="cart-count absolute -top-2.5 -right-2.5 bg-purple-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
-                >
-          {{ cartCount }}
-        </span>
-
-              </NuxtLink>
-              <!-- user icon and dropdown -->
-              <div
-                  class="relative inline-block"
-                  ref="userDropdownTrigger"
-                  @mouseenter="!mobile && (isUserDropdownOpen = true)"
-                  @mouseleave="!mobile && (isUserDropdownOpen = false)"
-              >
-                <button
-                    @click="toggleUserDropdown"
-                    class="flex items-center focus:outline-none text-gray-800 hover:text-cyan-700 transition-colors "
-                    aria-haspopup="true"
-                    :aria-expanded="isUserDropdownOpen"
-                >
-                  <Icon name="heroicons:user-circle" class="w-6 h-6 " />
-                  <Icon
-                      name="heroicons:chevron-down"
-                      class="ml-1 w-4 h-4 transition-transform"
-                      :class="{ 'transform rotate-180': isUserDropdownOpen }"
-                  />
-                </button>
-
-                <!-- 下拉菜单内容 -->
-                <transition
-                    enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-in"
-                    leave-from-class="transform scale-100 opacity-100"
-                    leave-to-class="transform scale-95 opacity-0"
-                >
-                  <div
-                      v-if="isUserDropdownOpen"
-                      ref="userDropdown"
-                      class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200"
+                <li v-for="sublink in link.dropdown" :key="sublink.path">
+                  <NuxtLink
+                      class="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-cyan-700"
+                      :to="sublink.path"
                   >
-                    <!-- 未登录状态 -->
-                    <div v-if="!currentUser" class="py-1">
-                      <NuxtLink
-                          to="/auth"
-                          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                          @click="isUserDropdownOpen = false"
-                      >
-                        Register
-                      </NuxtLink>
-                      <NuxtLink
-                          to="/auth"
-                          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                          @click="isUserDropdownOpen = false"
-                      >
-                        Log in
-                      </NuxtLink>
-                    </div>
+                    {{ sublink.title }}
+                  </NuxtLink>
+                </li>
+              </ul>
+            </li>
+          </ul>
 
-                    <!-- 已登录状态 -->
-                    <div v-if="currentUser" class="py-1">
-                      <div class="px-4 py-2 text-sm text-gray-700 border-b">
-                        Hi, {{ currentUser.email }}
-                      </div>
-                      <!-- <NuxtLink
-                          to="/account/profile"
-                          class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                          @click="isUserDropdownOpen = false"
-                      >
-                        Profile
-                      </NuxtLink>-->
-                      <button
-                          @click="signOut"
-                          class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      >
-                        Sign out
-                      </button>
-                    </div>
+          <!-- Cart + User -->
+          <div class="flex items-center space-x-6">
+            <NuxtLink
+                to="/shoppingCart"
+                class="relative text-gray-800 hover:text-cyan-700"
+                aria-label="Shopping cart"
+            >
+              <Icon name="heroicons:shopping-cart" class="w-6 h-6" />
+              <span
+                  v-if="cartCount > 0"
+                  class="absolute -top-2 -right-2 bg-purple-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+              >
+                {{ cartCount }}
+              </span>
+            </NuxtLink>
+
+            <!-- User dropdown -->
+            <div
+                class="relative"
+                @mouseenter="isUserDropdownOpen = true"
+                @mouseleave="isUserDropdownOpen = false"
+            >
+              <button
+                  @click="toggleUserDropdown"
+                  class="flex items-center text-gray-800 hover:text-cyan-700"
+              >
+                <Icon name="heroicons:user-circle" class="w-6 h-6" />
+                <Icon
+                    name="heroicons:chevron-down"
+                    class="ml-1 w-4 h-4 transition-transform"
+                    :class="{ 'rotate-180': isUserDropdownOpen }"
+                />
+              </button>
+
+              <transition
+                  enter-active-class="transition duration-100 ease-out"
+                  enter-from-class="transform scale-95 opacity-0"
+                  enter-to-class="transform scale-100 opacity-100"
+                  leave-active-class="transition duration-75 ease-in"
+                  leave-from-class="transform scale-100 opacity-100"
+                  leave-to-class="transform scale-95 opacity-0"
+              >
+                <div
+                    v-if="isUserDropdownOpen"
+                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50"
+                >
+                  <div v-if="!currentUser" class="py-1">
+                    <NuxtLink
+                        to="/auth"
+                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        @click="isUserDropdownOpen = false"
+                    >Register</NuxtLink>
+                    <NuxtLink
+                        to="/auth"
+                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        @click="isUserDropdownOpen = false"
+                    >Log in</NuxtLink>
                   </div>
-                </transition>
-              </div>
-
+                  <div v-else class="py-1">
+                    <div class="px-4 py-2 text-sm text-gray-700 border-b">
+                      Hi, {{ currentUser.email }}
+                    </div>
+                    <button
+                        @click="signOut"
+                        class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    >Sign out</button>
+                  </div>
+                </div>
+              </transition>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
 
+        <!-- ✅ Mobile Topbar (仅小屏显示) -->
+        <div class="flex md:hidden items-center justify-between w-full px-2 py-2">
+          <!-- Hamburger -->
+          <button @click="toggleMobileNav" class="text-gray-800" aria-label="Open menu">
+            <Icon name="heroicons:bars-3" class="w-7 h-7" />
+          </button>
 
-
-        <!-- Mobile menu -->
-        <div class="icon">
-          <i @click="toggleMobileNav" v-show="mobile" class="hamburger-menu" :class="{ 'icon-active': mobileNav }">
-            <svg viewBox="0 0 100 67" width="40" height="40">
-              <rect y="00" width="100" height="17" rx="10" fill="#ffffff"></rect>
-              <rect y="33" width="100" height="17" rx="10" fill="#ffffff"></rect>
-              <rect y="66" width="100" height="17" rx="10" fill="#ffffff"></rect>
-            </svg>
-          </i>
+          <!-- Right side: cart & user -->
+          <div class="flex items-center space-x-4">
+            <NuxtLink to="/shoppingCart" aria-label="Shopping cart">
+              <Icon name="heroicons:shopping-cart" class="w-6 h-6 text-gray-800" />
+            </NuxtLink>
+            <button @click="toggleUserDropdown" aria-label="User account">
+              <Icon name="heroicons:user-circle" class="w-6 h-6 text-gray-800" />
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- ✅ Mobile Dropdown -->
       <transition name="mobile-nav">
-        <ul v-show="mobileNav" class="dropdown-nav" :class="{ inverted: isHomePage, '': !isHomePage }" ref="dropdownNav">
-          <NuxtLink to="/" title="Homepage">
-            <img src="../public/img/logo.png" alt="Logo" id="mobile-logo" @click="toggleMobileNav"/>
-          </NuxtLink>
-          <div class="separator-mobile" />
-          <li v-for="link in links">
-            <NuxtLink @click="toggleMobileNav" class="landmark-mobile" :to="link.path" :aria-label="`Link to ${link.title}`" >{{ link.title }}</NuxtLink>
+        <ul
+            v-show="mobileNav"
+            class="md:hidden absolute top-full left-0 w-full bg-white z-40 shadow-md border-t border-gray-200 py-4"
+            ref="dropdownNav"
+        >
+          <li class="flex justify-center mb-4">
+            <NuxtLink to="/" @click="toggleMobileNav">
+              <img src="/img/logo.png" alt="Logo" class="h-8" />
+            </NuxtLink>
           </li>
-          <ul @click="toggleMobileNav" class="close-cross"> &#10006; </ul>
+          <li v-for="link in links" :key="link.path" class="text-center py-2 border-t border-gray-100">
+            <NuxtLink
+                @click="toggleMobileNav"
+                class="text-gray-800 hover:text-cyan-700 text-base font-medium"
+                :to="link.path"
+            >{{ link.title }}</NuxtLink>
+          </li>
+          <li class="text-center mt-4">
+            <button @click="toggleMobileNav" class="text-gray-500 text-sm hover:text-red-500">
+              &#10006; Close
+            </button>
+          </li>
         </ul>
       </transition>
 
+      <!-- ✅ Overlay -->
       <transition name="dropdown-overlay">
-        <div v-if="mobileNav" class="dropdown-overlay" :class="{ inverted: isHomePage, '': !isHomePage }" @click="toggleMobileNav"></div>
+        <div
+            v-if="mobileNav"
+            class="fixed inset-0 bg-black bg-opacity-30 z-30 md:hidden"
+            @click="toggleMobileNav"
+        ></div>
       </transition>
     </nav>
   </header>
 </template>
+
 
 <script setup>
 import { useUserStore } from "~/stores/user";
