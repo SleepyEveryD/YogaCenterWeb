@@ -1,3 +1,4 @@
+//coponents/ActivityComponent.vue
 <template>
   <div class="w-full h-[500px] flex flex-col bg-white rounded-xl shadow-md overflow-hidden relative">
     <!-- 星星图标 -->
