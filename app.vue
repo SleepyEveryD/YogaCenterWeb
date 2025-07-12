@@ -25,7 +25,7 @@ const userStore = useUserStore()
 const route = useRoute()
 
 useHead({
-  title: 'YogaCenter'
+  title: 'YogaHeaven'
 })
 
 let windowWidth = ref(process.client ? window.innerWidth : '')

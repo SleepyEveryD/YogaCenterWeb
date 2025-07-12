@@ -301,9 +301,9 @@ const links = ref([
     path: "/activities",
     dropdown: [
       { title: "Highlights✨", path: "/activities/Highlights" },
-      { title: "Type1", path: "/activities/Type1" },
-      { title: "Type2", path: "/activities/Type2" },
-      { title: "Type3", path: "/activities/Type3" },
+      { title: "Type1", path: "/activities/type/Type1" },
+      { title: "Type2", path: "/activities/type/Type2" },
+      { title: "Type3", path: "/activities/type/Type3" },
     ]
   },
   { title: "Teachers", path: "/teachers" },
