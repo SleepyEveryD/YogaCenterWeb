@@ -199,8 +199,18 @@
 
           <!-- ✅ Right side: cart & user -->
           <div class="flex items-center space-x-4">
-            <NuxtLink to="/shoppingCart" aria-label="Shopping cart">
-              <Icon name="heroicons:shopping-cart" class="w-6 h-6 text-gray-800" />
+            <NuxtLink
+                to="/shoppingCart"
+                class="relative text-gray-800 hover:text-cyan-700"
+                aria-label="Shopping cart"
+            >
+              <Icon name="heroicons:shopping-cart" class="w-6 h-6" />
+              <span
+                  v-if="cartCount > 0"
+                  class="absolute -top-2 -right-2 bg-purple-400 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+              >
+                {{ cartCount }}
+              </span>
             </NuxtLink>
 
             <!-- User dropdown 保留不动 -->
