@@ -19,11 +19,26 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
-
+import { ref, onMounted } from 'vue'
+const client = useSupabaseClient()
 const user = useSupabaseUser()
 const userStore = useUserStore()
 
+onMounted(() => {
+  client.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN') {
+      alert('✅ SIGNED_IN - user logged in')
+      await userStore.handleUserLogin()
+      // navigateTo('/') ← 可调试后再开启跳转
+    }
+  })
+})
 
+const login = async (provider) => {
+  console.log('Start login')
+  await client.auth.signInWithOAuth({
+    provider,
+    redirectTo: window.location.origin
+  })
+}
 </script>
-
