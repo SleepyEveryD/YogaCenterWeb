@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[450px]">
+  <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-[480px]">
     <!-- Teacher Photo (Fixed height) -->
     <NuxtLink
         :to="`/teachers/${teacher.id}`"
