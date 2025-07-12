@@ -301,9 +301,11 @@ const links = ref([
     path: "/activities",
     dropdown: [
       { title: "Highlights✨", path: "/activities/Highlights" },
-      { title: "Type1", path: "/activities/type/Type1" },
-      { title: "Type2", path: "/activities/type/Type2" },
-      { title: "Type3", path: "/activities/type/Type3" },
+      { title: "Expertise", path: "/activities/type/Expertise" },
+      { title: "Retreats", path: "/activities/type/Retreats" },
+      { title: "Meditation sessions", path: "/activities/type/Meditation sessions" },
+      { title: "Workshop", path: "/activities/type/Workshop" },
+      { title: "Seminars", path: "/activities/type/Seminars" },
     ]
   },
   { title: "Teachers", path: "/teachers" },
