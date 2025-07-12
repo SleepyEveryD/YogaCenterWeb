@@ -2,12 +2,10 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <TopBar />
-    <main class="mt-14 flex-1 mx-auto w-full max-w-[1200px] px-2 py-6">
+    <main class="mt-14 flex-1 mx-auto w-full max-w-[1200px] px-2 py-6 ">
 
       <Breadcrumbs v-if="route.path !== '/'"  class ="mx-4" />
-      <div class="container">
-        <!-- 你的主要内容 -->
-      </div>
+
       <slot></slot>
     </main>
 

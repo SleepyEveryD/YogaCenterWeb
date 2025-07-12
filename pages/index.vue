@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div >
     <TextOverImg :text=" 'You only live once.But if you do it right,once is enough.'" :img="'/img/course/9.jpg'" />
   </div>
-  <div class="container">
+  <div >
     <ActivitiesSection />
     <LeftImageRightText
         imageUrl="/img/course/6.avif"
@@ -21,7 +21,7 @@
 
 
   </div>
-  <div class="container">
+  <div >
     <TeachersSession></TeachersSession>
   </div>
 </template>
