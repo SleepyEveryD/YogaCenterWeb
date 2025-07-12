@@ -102,12 +102,8 @@
                         to="/auth"
                         class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                         @click="isUserDropdownOpen = false"
-                    >Register</NuxtLink>
-                    <NuxtLink
-                        to="/auth"
-                        class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        @click="isUserDropdownOpen = false"
-                    >Log in</NuxtLink>
+                    >Register/Login</NuxtLink>
+
                   </div>
                   <div v-else class="py-1">
                     <div class="px-4 py-2 text-sm text-gray-700 border-b">
@@ -235,12 +231,8 @@
                       to="/auth"
                       class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                       @click="isUserDropdownOpen = false"
-                  >Register</NuxtLink>
-                  <NuxtLink
-                      to="/auth"
-                      class="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                      @click="isUserDropdownOpen = false"
-                  >Log in</NuxtLink>
+                  >Register/Login</NuxtLink>
+
                 </div>
                 <div v-else class="py-1">
                   <div class="px-4 py-2 text-sm text-gray-700 border-b">
