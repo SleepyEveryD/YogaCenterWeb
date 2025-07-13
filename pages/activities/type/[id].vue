@@ -1,8 +1,13 @@
 <template>
   <div class="container">
+    <div>
+      <!-- 使用获取到的typeDescription作为副标题 -->
+      <PageTitle :short-description="typeDescription" :title="typeName" />
+    </div>
     <div id="IndexPage" class="mt-4 max-w-[1200px] mx-auto px-2">
       <div class="grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
-        <div v-for="activity in typeactivity" :key="activity.id">
+        <!-- 遍历courses数据 -->
+        <div v-for="activity in courses" :key="activity.id">
           <ActivityComponent :activity="activity" />
         </div>
       </div>
@@ -17,20 +22,15 @@ import { useRoute } from 'vue-router'
 const userStore = useUserStore()
 const route = useRoute()
 
-// ✅ 封装类型安全的 $fetch 调用，避免 stack depth 错误
-function useTypedFetch<T>(url: string, options = {}) {
-  return $fetch<T>(url as string, options)
-}
-
-// ✅ 定义类型
-interface Teacher {
+// 简化类型定义
+type Teacher = {
   id: string
   name: string
   surname: string
   img: string | null
 }
 
-interface Activity {
+type Activity = {
   id: string
   name: string
   description: string
@@ -44,9 +44,28 @@ interface Activity {
   oldPrice: number | null
 }
 
-// ✅ 加载对应类型的活动
-const { data: typeactivity, pending, error } = await useAsyncData<Activity[]>(
-    `activities-${route.params.id}`,
-    () => useTypedFetch<Activity[]>(`/api/activities/type/${route.params.id}`)
+// 使用更简单的类型定义
+type ApiData = {
+  courses?: Activity[]
+  typeDescription?: string
+  typeName?: string
+}
+
+const typeName = ref(route.params.id as string)
+const typeDescription = ref('')
+
+// 使用更宽松的类型定义
+const { data: apiResponse } = await useAsyncData(
+    `activities-data-${route.params.id}`,
+    () => $fetch(`/api/activities/type/${route.params.id}`) as Promise<ApiData>
 )
+
+const courses = computed(() => apiResponse.value?.courses || [])
+
+watchEffect(() => {
+  if (apiResponse.value) {
+    typeName.value = apiResponse.value.typeName || route.params.id as string
+    typeDescription.value = apiResponse.value.typeDescription || ''
+  }
+})
 </script>

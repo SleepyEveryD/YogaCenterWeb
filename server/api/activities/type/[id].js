@@ -1,24 +1,45 @@
+// api/activities/type/:id
 import { serverSupabaseClient } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
     const client = await serverSupabaseClient(event)
-
-    // ✅ 获取动态路径参数 /api/activities/type/:id
     const { id } = event.context.params
 
     if (!id) {
         return createError({ statusCode: 400, statusMessage: 'Missing type id in route' })
     }
 
-    const { data, error } = await client
-        .from('Course')
-        .select(`id, name, description, Type, img, Teach(Teacher:teacher(id,name,surname,img)), price, oldPrice`)
-        .eq('Type', id) // ✅ 用动态路径参数做筛选
+    // 并行获取课程数据和活动类型描述
+    const [coursesResult, typeResult] = await Promise.all([
+        // 获取课程数据
+        client
+            .from('Course')
+            .select(`id, name, description, Type, img, Teach(Teacher:teacher(id,name,surname,img)), price, oldPrice`)
+            .eq('Type', id),
 
-    if (error) {
-        console.error('Supabase error:', error)
-        return createError({ statusCode: 500, statusMessage: 'Supabase query failed' })
+        // 获取活动类型描述
+        client
+            .from('ActivityType')
+            .select('description')
+            .eq('typeName', id)
+            .single()
+    ])
+
+    // 错误处理
+    if (coursesResult.error) {
+        console.error('Courses query error:', coursesResult.error)
+        return createError({ statusCode: 500, statusMessage: 'Failed to fetch courses' })
     }
 
-    return data || []
+    if (typeResult.error) {
+        console.error('ActivityType query error:', typeResult.error)
+        // 不返回错误，只是记录日志，description设为空
+    }
+
+    // 组合返回数据
+    return {
+        courses: coursesResult.data || [],
+        typeDescription: typeResult.data?.description || '',
+        typeName: id
+    }
 })

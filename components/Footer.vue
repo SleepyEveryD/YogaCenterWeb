@@ -90,11 +90,11 @@ const links = ref([
       { title: "Highlights✨", path: "/activities/Highlights" },
       { title: "Expertise", path: "/activities/type/Expertise" },
       { title: "Retreats", path: "/activities/type/Retreats" },
-      { title: "Meditation sessions", path: "/activities/type/Meditation sessions" },
+      { title: "Meditation", path: "/activities/type/Meditation" },
       { title: "Workshop", path: "/activities/type/Workshop" },
       { title: "Seminars", path: "/activities/type/Seminars" },
-    ]
 
+    ]
   },
   { title: "Teachers", path: "/teachers" },
   { title: "About us", path: "/about_us" },

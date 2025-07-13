@@ -1,8 +1,6 @@
 <template>
-  <div class="container">
 
-  </div>
-  <div class="container">
+  <div>
     <PageTitle :short-description="'They are all the best teachers in the world'" :title="'Teachers'" />
   </div>
 

@@ -1,51 +1,43 @@
 <template>
   <Head>
-    <Title>Team member - Helping Hands</Title>
+    <Title>Team member</Title>
   </Head>
   <BreadCrumbs :crumbs="BCrumbs" />
-  <div class="back-button-container">
-    <div class="back-button-single">
-      <BackButton />
-    </div>
-  </div>
 
-  <!--previous and next link-->
+  <div class="back-button-container">
+    <BackButton class="back-button" />
+  </div>
 
   <div class="person-container">
-    <img :src="person.img" class="image" alt="Person image" />
-    <div class="person-title">
-      <div class="title-page font-bold">
-        {{ person.name }} {{ person.surname }}
+    <img :src="person.img" class="person-image" alt="Person image" />
+
+    <div class="person-details">
+      <h1 class="person-name">{{ person.name }} {{ person.surname }}</h1>
+
+      <div class="person-teach">
+        <span class="label">Teaches:</span>
+        <div class="teach-tags">
+          <span
+              v-for="teach in person.Teach"
+              :key="teach.Course.id"
+              class="tag"
+          >
+            <NuxtLink :to="`/activities/${teach.Course.id}`" class="link">
+              {{ teach.Course.name }}
+            </NuxtLink>
+          </span>
+        </div>
       </div>
-      <div class="person-info">
-        <div class="flex-1 overflow-y-auto max-h-64 pr-2">
-          <div class="flex flex-wrap items-center gap-3">
-            <span class="font-semibold text-gray-700">Teach:</span>
-            <span
-                v-for="teach in person.Teach"
-                :key="teach.Course.id"
-                class="px-4 py-1 bg-gray-200 text-gray-800 rounded-full text-base"
-            >
-      <NuxtLink
-          :to="`/activities/${teach.Course.id}`"
-          class="hover:underline"
-      >
-        {{ teach.Course.name }}
-      </NuxtLink>
-    </span>
-          </div>
-        </div>
 
+      <p class="person-description">{{ person.description }}</p>
 
-        <div class="">Description: {{ person.description }}</div>
-        <div class="person-cv">
-          <NuxtLink :to="person.CV" target="_blank" class="cv">See {{ person.name }}'s CV</NuxtLink>
-        </div>
+      <div class="person-cv">
+        <NuxtLink :to="person.CV" target="_blank" class="cv-link">
+          See {{ person.name }}'s CV
+        </NuxtLink>
       </div>
     </div>
   </div>
-
-
 </template>
 
 <script setup>
@@ -62,15 +54,8 @@ export default {
   computed: {
     BCrumbs() {
       return [
-        {
-          label: "home",
-          url: "/",
-        },
-
-        {
-          label: "our team",
-          url: "/our_team",
-        },
+        { label: "home", url: "/" },
+        { label: "our team", url: "/our_team" },
       ];
     },
   },
@@ -79,168 +64,89 @@ export default {
 
 <style scoped>
 .back-button-container {
-  display: flex;
-  margin: 2vw;
+  margin: 2rem;
 }
 
-.back-button-single {
-  position: relative;
-  left: 2vw;
-  top: 0.5vw;
-}
-
-
-.person-title {
-  align-self: start;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  font-family: Jost;
-  font-size: 1.8vw;
-  font-weight: 300;
-  text-align: left;
-  height: 100%;
-}
-
-.title-page {
-  text-align: left;
-}
-
-.person-info {
-  padding-top: 3vw;
-}
-
-.image {
-  border-radius: 50vw;
-  border: 2px solid black;
-  width: 37%;
+.back-button {
+  margin-left: 1rem;
 }
 
 .person-container {
   display: flex;
-  flex-direction: row;
-  padding: 5.5vw;
-  padding-top: 4vw;
-  padding-bottom: 4vw;
-  gap: 10vw;
+  flex-wrap: wrap;
   justify-content: center;
-  padding-right: 20vw;
+  gap: 4rem;
+  padding: 4rem 2rem;
 }
 
-.person-name-surname {
-  font-size: 4vw;
-  font-weight: 1000;
+.person-image {
+  border-radius: 9999px;
+  border: 2px solid #000;
+  width: 300px;
+  object-fit: cover;
+}
+
+.person-details {
+  max-width: 600px;
+  font-family: 'Jost', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.person-name {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.person-teach .label {
+  font-weight: 600;
+  color: #555;
+}
+
+.teach-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  background-color: #eee;
+  color: #333;
+  padding: 0.4rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+}
+
+.link:hover {
+  text-decoration: underline;
 }
 
 .person-description {
-  font-size: 2.3vh;
-  font-weight: 300;
-  font-family: Jost;
-  background-color: #48a6a7;
-  display: flex;
-  padding-left: 5.5vw;
-  padding-right: 5.5vw;
-  padding-top: 2vw;
-  padding-bottom: 2vw;
-  gap: 2vw;
-  margin-top: 1vw;
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
 }
 
-.title-description {
-  font-family: Jost;
-  font-size: 2.5vw;
-  font-weight: 1000;
-  text-align: left;
-  padding-left: 5.5vw;
-  padding-right: 5.5vw;
-  padding-top: 5.5vw;
-  padding-bottom: 1vw;
-}
-
-.carousel-container {
-  justify-content: center;
-}
-
-.link {
-  text-align: center;
-  font-family: Jost;
-  font-size: 1.3vw;
-  font-weight: 300;
-  text-align: left;
-  color: #B6244F;
+.cv-link {
+  color: #b6244f;
   text-decoration: underline;
+  font-weight: 500;
 }
-.link:hover {
+
+.cv-link:hover {
   text-decoration: none;
 }
 
-.person-cv {
-  padding-top: 1vw;
-}
-
-.cv{
-  font-family: Jost;
-  font-weight: 300;
-  color: #B6244F;
-  text-decoration: underline;
-}
-
-.cv:hover {
-  text-decoration: none;
-}
-
-@media screen and (max-width: 850px) {
-
-  .image{
-    align-items: center;
-    width: 70%;
-  }
-
+@media (max-width: 768px) {
   .person-container {
-    display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     align-items: center;
-    padding-right: 0;
-    gap: 0;
-    margin-bottom: 3vh;
-    padding: 0;
+    padding: 2rem 1rem;
   }
 
-  .person-title {
-    align-self: center;
-    align-items: center;
-    text-align: center;
-    padding-top: 2vw;
-  }
-
-  .person-name-surname {
-    font-size: 2.6vh;
-  }
-
-  .person-info, .person-role, .person-email, .person-phone, .person-cv, .person-description {
-    font-size: 2.3vh;
-  }
-
-  .person-description {
-    text-align: center;
-  }
-
-  .title-description{
-    font-size: 2vh;
-  }
-
-  .link {
-    font-size: 2.3vh;
-    text-align: center;
-  }
-
-  .carousel-container {
-    margin-bottom: 3vh;
-  }
-
-  .cv{
-    color: #B6244F;
+  .person-details {
     text-align: center;
   }
 }
