@@ -40,6 +40,9 @@
       <p class="text-gray-600 mb-6 line-clamp-3">
         {{ activity.description }}
       </p>
+      <p class="text-gray-600 mb-6 line-clamp-3">
+        {{ activity.schedule }}
+      </p>
 
       <div class="flex items-center justify-start gap-3 px-1 mb-4">
         <span :class="['font-semibold', activity.oldPrice ? 'text-red-500' : 'text-black']">${{ activity.price }}</span>

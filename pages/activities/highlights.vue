@@ -34,6 +34,7 @@ interface Activity {
   } | null;
   price: number;
   oldPrice: number | null;
+  schedule: string;
 }
 
 // 获取 starred 课程

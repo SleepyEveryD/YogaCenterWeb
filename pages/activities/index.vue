@@ -25,7 +25,7 @@ const { data: activities, error } = await useAsyncData(
     async () => {
       const { data, error } = await client
           .from('Course')
-          .select(`id, name,description,Type,img, star,Teach(Teacher:teacher(id,name,surname,img)),price, oldPrice`); // 移除了 .single() 以获取所有记录
+          .select(`id, name,description,Type,img, star,Teach(Teacher:teacher(id,name,surname,img)),price, oldPrice,schedule`); // 移除了 .single() 以获取所有记录
 
       if (error) {
         console.error('Supabase error:', error);

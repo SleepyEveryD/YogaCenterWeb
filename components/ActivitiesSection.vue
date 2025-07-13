@@ -32,6 +32,7 @@ interface Activity {
   } | null;
   price: number;
   oldPrice: number|null;
+  schedule: string;
 }
 
 const client = useSupabaseClient();

@@ -30,13 +30,18 @@
             </div>
           </div>
 
-          <!-- CTA Button -->
-          <button
-              v-if="ctaText"
-              class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300 shadow-md hover:shadow-lg"
+          <!-- CTA Button with Link -->
+          <a
+              v-if="ctaText && ctaLink"
+              :href="ctaLink"
+              class="inline-block"
           >
-            {{ ctaText }}
-          </button>
+            <button
+                class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded-lg transition duration-300 shadow-md hover:shadow-lg"
+            >
+              {{ ctaText }}
+            </button>
+          </a>
         </div>
       </div>
     </div>
@@ -66,6 +71,10 @@ defineProps({
     default: () => []
   },
   ctaText: {
+    type: String,
+    default: ''
+  },
+  ctaLink: {
     type: String,
     default: ''
   }

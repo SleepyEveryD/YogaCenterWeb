@@ -1,6 +1,6 @@
 <template>
   <div >
-    <TextOverImg :text=" 'You only live once.But if you do it right,once is enough.'" :img="'/img/course/9.jpg'" />
+    <TextOverImg :text=" 'You only live once.But if you do it right,once is enough.'" :img="'/img/course/9.jpg'"  />
   </div>
   <div >
     <ActivitiesSection />
@@ -17,6 +17,7 @@
         'Suitable for all skill levels'
       ]"
         ctaText="Contact us now"
+        ctaLink="/contact_us"
     />
 
 

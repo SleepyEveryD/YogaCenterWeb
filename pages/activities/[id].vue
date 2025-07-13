@@ -68,6 +68,9 @@
         <p class="text-base md:text-lg">
           {{ activity.description }}
         </p>
+        <p class="whitespace-pre-line text-base md:text-lg pl-4">
+          {{ formattedSchedule }}
+        </p>
       </div>
 
       <!-- price and cart -->
@@ -126,11 +129,21 @@ const userStore = useUserStore()
 const route = useRoute()
 const loading = ref(true)
 
+
+
 // 1. 使用 useAsyncData 处理异步数据
 const { data: activity } = await useAsyncData(
     `activity-${route.params.id}`,
     () => $fetch(`/api/activities/${route.params.id}`)
 )
+const formattedSchedule = computed(() => {
+  if (!activity.value?.schedule) return ''
+
+  // 在每个星期几前添加换行符
+  return activity.value.schedule
+      .replace(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/g, '\n‣ $1')
+      .trim()
+})
 
 // 2. 确保数据存在后再计算百分比
 const activityPricePercentage = computed(() => {

@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
         // 获取课程数据
         client
             .from('Course')
-            .select(`id, name, description, Type, img, Teach(Teacher:teacher(id,name,surname,img)), price, oldPrice`)
+            .select(`id, name, description, Type, img, Teach(Teacher:teacher(id,name,surname,img)), price, oldPrice,schedule`)
             .eq('Type', id),
 
         // 获取活动类型描述

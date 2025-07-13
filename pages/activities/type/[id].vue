@@ -1,12 +1,10 @@
 <template>
   <div class="container">
     <div>
-      <!-- 使用获取到的typeDescription作为副标题 -->
       <PageTitle :short-description="typeDescription" :title="typeName" />
     </div>
     <div id="IndexPage" class="mt-4 max-w-[1200px] mx-auto px-2">
       <div class="grid xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
-        <!-- 遍历courses数据 -->
         <div v-for="activity in courses" :key="activity.id">
           <ActivityComponent :activity="activity" />
         </div>
@@ -22,50 +20,58 @@ import { useRoute } from 'vue-router'
 const userStore = useUserStore()
 const route = useRoute()
 
-// 简化类型定义
-type Teacher = {
+// 基础类型定义
+interface Teacher {
   id: string
   name: string
   surname: string
   img: string | null
 }
 
-type Activity = {
+interface ActivityBase {
   id: string
   name: string
   description: string
   Type: string
   img: string | null
   star: boolean
-  Teach: {
-    Teacher: Teacher
-  } | null
   price: number
   oldPrice: number | null
+  schedule: string
 }
 
-// 使用更简单的类型定义
-type ApiData = {
-  courses?: Activity[]
-  typeDescription?: string
-  typeName?: string
+interface Activity extends ActivityBase {
+  Teach: {
+    Teacher: Teacher | null
+  } | null
 }
 
-const typeName = ref(route.params.id as string)
-const typeDescription = ref('')
+// API响应类型（简化版）
+interface ActivitiesApiResponse {
+  courses: Activity[]
+  typeDescription: string
+  typeName: string
+}
 
-// 使用更宽松的类型定义
+const typeName = ref<string>(route.params.id.toString())
+const typeDescription = ref<string>('')
+
+// 使用类型断言解决递归问题
 const { data: apiResponse } = await useAsyncData(
     `activities-data-${route.params.id}`,
-    () => $fetch(`/api/activities/type/${route.params.id}`) as Promise<ApiData>
+    () => $fetch(`/api/activities/type/${route.params.id}`).then(res => ({
+      courses: (res as any)?.courses || [],
+      typeDescription: (res as any)?.typeDescription || '',
+      typeName: (res as any)?.typeName || route.params.id.toString()
+    }))
 )
 
 const courses = computed(() => apiResponse.value?.courses || [])
 
 watchEffect(() => {
   if (apiResponse.value) {
-    typeName.value = apiResponse.value.typeName || route.params.id as string
-    typeDescription.value = apiResponse.value.typeDescription || ''
+    typeName.value = apiResponse.value.typeName
+    typeDescription.value = apiResponse.value.typeDescription
   }
 })
 </script>
