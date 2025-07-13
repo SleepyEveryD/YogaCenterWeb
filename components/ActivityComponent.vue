@@ -1,4 +1,3 @@
-//coponents/ActivityComponent.vue
 <template>
   <div class="w-full h-[500px] flex flex-col bg-white rounded-xl shadow-md overflow-hidden relative">
     <!-- 星星图标 -->
@@ -40,9 +39,7 @@
       <p class="text-gray-600 mb-6 line-clamp-3">
         {{ activity.description }}
       </p>
-      <p class="text-gray-600 mb-6 line-clamp-3">
-        {{ activity.schedule }}
-      </p>
+
 
       <div class="flex items-center justify-start gap-3 px-1 mb-4">
         <span :class="['font-semibold', activity.oldPrice ? 'text-red-500' : 'text-black']">${{ activity.price }}</span>
@@ -63,12 +60,20 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup>
-const props = defineProps(['activity'])
+import { computed } from "vue";
 
+const props = defineProps(['activity']);
 
+const formattedSchedule = computed(() => {
+  if (!props.activity.schedule) return '';
+
+  // 在每个星期几前添加换行符和项目符号
+  return props.activity.schedule
+      .replace(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/g, '\n‣ $1')
+      .trim();
+});
 </script>
