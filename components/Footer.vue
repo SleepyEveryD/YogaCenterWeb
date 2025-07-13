@@ -93,6 +93,9 @@ const links = ref([
       { title: "Meditation", path: "/activities/type/Meditation" },
       { title: "Workshop", path: "/activities/type/Workshop" },
       { title: "Seminars", path: "/activities/type/Seminars" },
+      { title: "Ashtanga", path: "/activities/type/Ashtanga" },
+      { title: "Hatha", path: "/activities/type/Hatha" },
+      { title: "Iyengar", path: "/activities/type/Iyengar" },
 
     ]
   },
