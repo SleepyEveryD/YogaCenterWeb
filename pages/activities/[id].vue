@@ -181,7 +181,7 @@ const addToCart = () => {
 
 const buyNow = () => {
   addToCart()
-  navigateTo('/checkout')
+  navigateTo('/shoppingCart')
 }
 </script>
 
