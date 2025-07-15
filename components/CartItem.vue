@@ -20,7 +20,14 @@
       </div>
     </div>
 
-    <img class="rounded-md md:w-[150px] w-[90px]" :src="product.image" />
+    <!-- ✅ 修改后的图片结构，统一 150x85，禁止压缩，裁剪填满 -->
+    <div class="shrink-0 w-[150px] h-[85px] rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+      <img
+          :src="product.image"
+          class="w-full h-full object-cover"
+          alt="Product image"
+      />
+    </div>
 
     <div class="overflow-hidden pl-2 w-full">
       <div class="flex items-center justify-between w-full">
@@ -62,6 +69,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { useUserStore } from '~/stores/user'

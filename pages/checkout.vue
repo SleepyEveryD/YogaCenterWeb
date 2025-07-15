@@ -93,11 +93,7 @@ onBeforeMount(async () => {
   }
 })
 
-watchEffect(() => {
-  if (route.fullPath == '/checkout' && !user.value) {
-    return navigateTo('/auth')
-  }
-})
+
 
 onMounted(async () => {
   isProcessing.value = true
