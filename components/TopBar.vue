@@ -370,6 +370,7 @@ const signOut = async () => {
     const userId = user.value?.id
     console.log('userId:', userId)
     await overrideCartBeforeSignOut(userId, userStore.cart, client)
+    console.log(userStore.cart)
 
 
     localStorage.removeItem('hasMergedCart')
