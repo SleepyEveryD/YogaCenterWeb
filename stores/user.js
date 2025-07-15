@@ -2,49 +2,56 @@ import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', {
     state: () => ({
-        cart: [],
-        checkout: [],
+        cart: [],       // 本地购物车，包含完整商品信息
+        checkout: [],   // 结算列表
         isLoading: false
     }),
     actions: {
+        // 添加商品到本地购物车
         addToCart(product) {
             const existingItem = this.cart.find(i => i.id === product.id)
             if (existingItem) {
                 existingItem.quantity += product.quantity || 1
             } else {
-                this.cart.push({...product, quantity: product.quantity || 1})
+                this.cart.push({
+                    ...product,
+                    quantity: product.quantity || 1
+                })
             }
         },
+
+        // 清空购物车
         clearCart() {
             this.cart = []
         },
+
+        // 获取购物车数据
         async fetchCart(userId = null, client = null) {
             this.isLoading = true
             try {
-                // 如果未登录，直接返回本地购物车
+                // 未登录用户直接返回本地购物车
                 if (!userId || !client) {
                     this.isLoading = false
                     return
                 }
 
-                // 获取服务器购物车数据
+                // 获取服务器购物车数据（只包含course_id和quantity）
                 const { data: serverCart, error } = await client
                     .from('carts')
-                    .select('*')
+                    .select('course_id, quantity')
                     .eq('user_id', userId)
 
                 if (error) throw error
 
-                // 如果有服务器购物车数据，则合并
+                // 合并服务器和本地购物车
                 if (serverCart && serverCart.length > 0) {
                     await this.mergeCartAfterLogin(userId, client)
                 } else if (this.cart.length > 0) {
-                    // 如果服务器没有购物车数据，但本地有，则上传本地购物车
+                    // 上传本地购物车到服务器（不传price）
                     const toInsert = this.cart.map(item => ({
                         user_id: userId,
                         course_id: item.id,
-                        quantity: item.quantity,
-                        price: item.price
+                        quantity: item.quantity
                     }))
 
                     const { error: insertError } = await client
@@ -55,25 +62,30 @@ export const useUserStore = defineStore('user', {
                 }
             } catch (error) {
                 console.error('购物车操作失败:', error)
-                // 即使出错也继续使用本地购物车
             } finally {
                 this.isLoading = false
             }
         },
+
+        // 登录后合并购物车
         async mergeCartAfterLogin(userId, client) {
             try {
-                // 获取服务器购物车
+                // 获取服务器购物车基础数据
                 const { data: serverCart, error } = await client
                     .from('carts')
-                    .select('*')
+                    .select('course_id, quantity')
                     .eq('user_id', userId)
 
                 if (error) throw error
 
-                // 获取服务器购物车中的课程ID
-                const courseIds = serverCart.map(item => item.course_id)
+                // 获取课程完整信息
+                const courseIds = [
+                    ...new Set([
+                        ...serverCart.map(item => item.course_id),
+                        ...this.cart.map(item => item.id)
+                    ])
+                ]
 
-                // 查询完整课程信息
                 const { data: courseInfos, error: courseError } = await client
                     .from('Course')
                     .select('*')
@@ -81,49 +93,44 @@ export const useUserStore = defineStore('user', {
 
                 if (courseError) throw courseError
 
-                // 转换服务器购物车格式
-                const serverCartFormatted = serverCart.map(item => {
-                    const course = courseInfos.find(c => c.id === item.course_id)
+                // 创建课程信息映射表
+                const courseMap = new Map(courseInfos.map(course => [course.id, course]))
+
+                // 合并策略：
+                // 1. 保留本地购物车中的完整商品信息
+                // 2. 合并服务器购物车中的数量
+                const mergedCart = this.cart.map(localItem => {
+                    const serverItem = serverCart.find(s => s.course_id === localItem.id)
                     return {
-                        id: item.course_id,
-                        quantity: item.quantity,
-                        price: item.price || course?.price || 0,
-                        image: Array.isArray(course?.img) ? course.img[0] : course?.img || null,
-                        ...course
+                        ...localItem,
+                        quantity: serverItem
+                            ? Math.max(localItem.quantity, serverItem.quantity)
+                            : localItem.quantity
                     }
                 })
 
-                // 合并购物车
-                const mergedMap = new Map()
-
-                // 添加本地购物车项
-                this.cart.forEach(item => {
-                    mergedMap.set(item.id, { ...item })
-                })
-
-                // 合并服务器购物车项
-                serverCartFormatted.forEach(item => {
-                    if (mergedMap.has(item.id)) {
-                        const localItem = mergedMap.get(item.id)
-                        mergedMap.set(item.id, {
-                            ...item,
-                            quantity: Math.max(localItem.quantity, item.quantity),
-                            price: item.price || localItem.price // 优先使用服务器价格
-                        })
-                    } else {
-                        mergedMap.set(item.id, { ...item })
+                // 添加服务器有但本地没有的商品
+                serverCart.forEach(serverItem => {
+                    if (!mergedCart.some(item => item.id === serverItem.course_id)) {
+                        const course = courseMap.get(serverItem.course_id)
+                        if (course) {
+                            mergedCart.push({
+                                ...course,
+                                id: course.id,
+                                quantity: serverItem.quantity
+                            })
+                        }
                     }
                 })
 
-                // 更新购物车状态
-                this.cart = Array.from(mergedMap.values())
+                // 更新本地购物车
+                this.cart = mergedCart
 
-                // 更新服务器购物车
-                const updates = Array.from(mergedMap.values()).map(item => ({
+                // 同步到服务器（只同步course_id和quantity）
+                const updates = mergedCart.map(item => ({
                     user_id: userId,
                     course_id: item.id,
-                    quantity: item.quantity,
-                    price: item.price
+                    quantity: item.quantity
                 }))
 
                 // 先删除旧的
@@ -143,6 +150,6 @@ export const useUserStore = defineStore('user', {
         }
     },
     persist: {
-        paths: ['cart']
+        paths: ['cart']  // 持久化本地购物车
     }
 })
