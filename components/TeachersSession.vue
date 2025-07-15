@@ -1,14 +1,12 @@
 <template>
-
-
   <div id="IndexPage" class="mt-4 max-w-[1200px] mx-auto px-2">
-    <div class="grid xl:grid-cols-4 lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
+    <!-- 修改为更合理的响应式列数 -->
+    <div class="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
       <div v-if="teachers" v-for="teacher in teachers" :key="teacher">
         <TeacherComponent :teacher="teacher"/>
       </div>
     </div>
   </div>
-
 </template>
 <script setup lang="ts">
 
