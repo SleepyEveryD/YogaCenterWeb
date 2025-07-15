@@ -79,8 +79,12 @@
         <span
             v-if="activity.oldPrice"
             class="text-gray-500 text-s text-light line-through">${{ activity.oldPrice }}</span>
-        <span class="bg-[#F5F5F5] border text-[#C08562] text-[9px] font-semibold px-1.5 rounded-sm ">{{activityPricePercentage}}% off</span>
-
+        <span
+            v-if="activityPricePercentage > 0"
+            class="bg-[#F5F5F5] border text-[#C08562] text-[9px] font-semibold px-1.5 rounded-sm"
+        >
+  {{activityPricePercentage}}% off
+</span>
       </div>
 
 
