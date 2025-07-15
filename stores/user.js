@@ -122,7 +122,6 @@ export const useUserStore = defineStore('user', {
                     user_id: userId,
                     course_id: item.id,
                     quantity: item.quantity,
-                    price: item.price
                 }))
 
                 // 先删除旧的
