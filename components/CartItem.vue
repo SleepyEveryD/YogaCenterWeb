@@ -69,7 +69,7 @@ const userStore = useUserStore()
 
 const props = defineProps(['product', 'selectedArray'])
 const { product, selectedArray } = toRefs(props)
-const emit = defineEmits(['selectedRadio'])
+const emit = defineEmits(['selectedRadio', 'remove'])
 
 const isHover = ref(false)
 
@@ -86,5 +86,6 @@ const toggleSelect = () => {
 // ✅ 移除商品
 const removeFromCart = () => {
   userStore.cart = userStore.cart.filter((prod) => prod.id !== product.value.id)
+  emit('remove', product.value)  // 🔔 通知父组件
 }
 </script>
